@@ -13,22 +13,28 @@ const initialState = {
   scoreTotal: 0,
 };
 
-export default function(state = initialState, action = '') {
+const placeCard = (state, action) => {
+  let placedCards = cloneByJSON(state.placedCards);
+  let {col, row, card} = action;
+  placedCards[col][row] = {suit:card.suit, number:card.number};
+  const { scoresCols, scoresRows, scoreTotal } = updateHandScores(col, row, state.scoresCols, state.scoresRows, placedCards);
+  return {
+      ...state,
+      placedCards,
+      scoresRows,
+      scoresCols,
+      scoreTotal,
+  };
+};
+
+const reducer = (state = initialState, action = '') => {
   switch (action.type) {
     case PLACE_CARD:
-        let placedCards = cloneByJSON(state.placedCards);
-        let {col, row, card} = action;
-        placedCards[col][row] = {suit:card.suit, number:card.number};
-        const { scoresCols, scoresRows, scoreTotal } = updateHandScores(col, row, state.scoresCols, state.scoresRows, placedCards);
-        return {
-            ...state,
-            placedCards,
-            scoresRows,
-            scoresCols,
-            scoreTotal,
-        };
+      return placeCard(state, action);
 
     default:
         return state;
   }
-}
+};
+
+export default reducer;
