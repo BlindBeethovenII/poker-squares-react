@@ -26,7 +26,7 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^24.1.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
-    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-testing-library": "^3.9.2",
     "eslint-webpack-plugin": "^2.1.0",
@@ -80,12 +80,6 @@
     "predeploy": "node scripts/build.js",
     "deploy": "gh-pages -d build"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -103,7 +97,12 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.2",
-    "gh-pages": "^3.1.0"
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.0.0",
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "gh-pages": "^3.1.0",
+    "prettier": "^2.2.1"
   },
   "jest": {
     "roots": [
@@ -156,6 +155,12 @@
       "jest-watch-typeahead/testname"
     ],
     "resetMocks": true
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "jsxBracketSameLine": true
   },
   "babel": {
     "presets": [
