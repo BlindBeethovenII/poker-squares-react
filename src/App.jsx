@@ -1,8 +1,8 @@
 import React from 'react';
 
 import PlayArea from './components/PlayArea';
-import Cards from './containers/Cards';
-import Scores from './containers/Scores';
+import Cards from './components/CardsConnector';
+import Scores from './components/ScoresConnector';
 
 const App = () => (
   <div>

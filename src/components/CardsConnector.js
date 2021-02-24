@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import Cards from '../components/Cards';
+import Cards from './Cards';
 
 function mapStateToProps(state) {
   const { deal } = state;

@@ -13,7 +13,7 @@ import BorderRightImage from '../images/borders/right.png';
 
 import { GRID_INDEXES } from '../constants';
 
-import BlankSpace from '../containers/BlankSpace';
+import BlankSpace from './BlankSpaceConnector';
 
 class PlayArea extends PureComponent {
   render() {

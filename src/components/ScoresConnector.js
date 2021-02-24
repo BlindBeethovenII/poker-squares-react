@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import Scores from '../components/Scores';
+import Scores from './Scores';
 
 function mapStateToProps(state) {
   const { hand } = state;

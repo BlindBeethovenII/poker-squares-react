@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { placeCard } from '../redux/actions/hand';
 import { dealNextCard } from '../redux/actions/deal';
 
-import BlankSpace from '../components/BlankSpace';
+import BlankSpace from './BlankSpace';
 
 function mapStateToProps(state) {
   const { deal } = state;
