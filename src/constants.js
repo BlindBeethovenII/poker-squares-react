@@ -5,7 +5,7 @@ export const SUIT_SPADES = 'S';
 export const SUIT_HEARTS = 'H';
 export const SUIT_DIAMONDS = 'D';
 export const SUIT_CLUBS = 'C';
-export const SUITS = [ SUIT_SPADES, SUIT_HEARTS, SUIT_DIAMONDS, SUIT_CLUBS ];
+export const SUITS = [SUIT_SPADES, SUIT_HEARTS, SUIT_DIAMONDS, SUIT_CLUBS];
 export const SUIT_NONE = 'NONE';
 
 export const NUMBER_A = 1;
@@ -21,13 +21,26 @@ export const NUMBER_10 = 10;
 export const NUMBER_J = 11;
 export const NUMBER_Q = 12;
 export const NUMBER_K = 13;
-export const NUMBERS = [ NUMBER_A, NUMBER_2, NUMBER_3, NUMBER_4, NUMBER_5, NUMBER_6, NUMBER_7, NUMBER_8, NUMBER_9, NUMBER_10, NUMBER_J, NUMBER_Q, NUMBER_K ];
+export const NUMBERS = [
+  NUMBER_A,
+  NUMBER_2,
+  NUMBER_3,
+  NUMBER_4,
+  NUMBER_5,
+  NUMBER_6,
+  NUMBER_7,
+  NUMBER_8,
+  NUMBER_9,
+  NUMBER_10,
+  NUMBER_J,
+  NUMBER_Q,
+  NUMBER_K,
+];
 export const NUMBER_NONE = -1;
 
-export const CARD_NONE = {suit: SUIT_NONE, number: NUMBER_NONE};
+export const CARD_NONE = { suit: SUIT_NONE, number: NUMBER_NONE };
 
 export const GRID_INDEXES = [0, 1, 2, 3, 4];
 
 export const DEAL_COL = 6;
 export const DEAL_ROW = 2;
-

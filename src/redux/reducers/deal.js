@@ -1,8 +1,4 @@
-import {
-  SET_DECK,
-  DEAL_NEXT_CARD,
-} from '../constants/deal';
-
+import { SET_DECK, DEAL_NEXT_CARD } from '../constants/deal';
 import { cloneByJSON } from '../../useful-js-functions';
 import { col2Left, row2Top } from '../../card-functions';
 
@@ -17,18 +13,18 @@ const setDeck = (state, action) => ({
 });
 
 const dealNextCard = (state, action) => {
-      // move current card to given col,row, and move current card to next
-      let {col, row} = action;
-      let deck = cloneByJSON(state.deck);
-      let currentCardIndex = state.currentCardIndex;
-      deck[currentCardIndex].left = col2Left(col);
-      deck[currentCardIndex].top = row2Top(row);
+  // move current card to given col,row, and move current card to next
+  const { deck, currentCardIndex } = state;
+  const { col, row } = action;
+  const deckNew = cloneByJSON(deck);
+  deckNew[currentCardIndex].left = col2Left(col);
+  deckNew[currentCardIndex].top = row2Top(row);
 
-      return {
-          ...state,
-          deck,
-          currentCardIndex: currentCardIndex+1,
-      };
+  return {
+    ...state,
+    deck: deckNew,
+    currentCardIndex: currentCardIndex + 1,
+  };
 };
 
 const reducer = (state = initialState, action = '') => {
@@ -40,7 +36,7 @@ const reducer = (state = initialState, action = '') => {
       return dealNextCard(state, action);
 
     default:
-        return state;
+      return state;
   }
 };
 

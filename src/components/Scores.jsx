@@ -3,8 +3,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import Score from './Score';
-
-
+import { keyFromIndex } from '../card-functions';
 
 class Scores extends PureComponent {
   render() {
@@ -13,9 +12,13 @@ class Scores extends PureComponent {
 
     return (
       <div>
-        { scoresRows.map((score, row) => <Score key={`rowscore_${row}`} col={5} row={row} score={score} />) }
-        { scoresCols.map((score, col) => <Score key={`colscore_${col}`} col={col} row={5} score={score} />) }
-        <Score key={'totalscore'} col={5} row={5} score={scoreTotal} />
+        {scoresRows.map((score, row) => (
+          <Score key={keyFromIndex('rowscore', row)} col={5} row={row} score={score} />
+        ))}
+        {scoresCols.map((score, col) => (
+          <Score key={keyFromIndex('colscore', col)} col={col} row={5} score={score} />
+        ))}
+        <Score key="totalscore" col={5} row={5} score={scoreTotal} />
       </div>
     );
   }

@@ -6,4 +6,4 @@ import hand from './hand';
 export default combineReducers({
   deal,
   hand,
-})
+});

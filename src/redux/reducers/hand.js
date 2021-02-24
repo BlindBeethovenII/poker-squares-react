@@ -1,10 +1,6 @@
-import {
-  PLACE_CARD,
-} from '../constants/hand';
-
+import { PLACE_CARD } from '../constants/hand';
 import { cloneByJSON } from '../../useful-js-functions';
 import { updateHandScores } from '../../card-functions';
-
 
 const initialState = {
   placedCards: [],
@@ -14,16 +10,22 @@ const initialState = {
 };
 
 const placeCard = (state, action) => {
-  let placedCards = cloneByJSON(state.placedCards);
-  let {col, row, card} = action;
-  placedCards[col][row] = {suit:card.suit, number:card.number};
-  const { scoresCols, scoresRows, scoreTotal } = updateHandScores(col, row, state.scoresCols, state.scoresRows, placedCards);
+  const placedCards = cloneByJSON(state.placedCards);
+  const { col, row, card } = action;
+  placedCards[col][row] = { suit: card.suit, number: card.number };
+  const { scoresCols, scoresRows, scoreTotal } = updateHandScores(
+    col,
+    row,
+    state.scoresCols,
+    state.scoresRows,
+    placedCards,
+  );
   return {
-      ...state,
-      placedCards,
-      scoresRows,
-      scoresCols,
-      scoreTotal,
+    ...state,
+    placedCards,
+    scoresRows,
+    scoresCols,
+    scoreTotal,
   };
 };
 
@@ -33,7 +35,7 @@ const reducer = (state = initialState, action = '') => {
       return placeCard(state, action);
 
     default:
-        return state;
+      return state;
   }
 };
 

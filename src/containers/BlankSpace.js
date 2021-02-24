@@ -1,17 +1,13 @@
 import { connect } from 'react-redux';
 
-import {
-    placeCard,
-} from '../redux/actions/hand';
-
-import {
-  dealNextCard,
-} from '../redux/actions/deal';
+import { placeCard } from '../redux/actions/hand';
+import { dealNextCard } from '../redux/actions/deal';
 
 import BlankSpace from '../components/BlankSpace';
 
 function mapStateToProps(state) {
-  const { deck, currentCardIndex } = state.deal;
+  const { deal } = state;
+  const { deck, currentCardIndex } = deal;
 
   return {
     dealtCard: deck[currentCardIndex],
@@ -23,7 +19,4 @@ const mapDispatchToProps = {
   dealNextCard,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BlankSpace);
+export default connect(mapStateToProps, mapDispatchToProps)(BlankSpace);

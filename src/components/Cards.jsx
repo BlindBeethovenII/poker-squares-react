@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 import Card from './Card';
 
-
 class Cards extends PureComponent {
   render() {
     // redux provides the deck and the current card we are up to
@@ -13,11 +12,11 @@ class Cards extends PureComponent {
 
     return (
       <div>
-        { 
-          deck.map((card, cardIndex) => 
-            cardIndex <= currentCardIndex?<Card key={deck[cardIndex].id} card={deck[cardIndex]} zIndex={cardIndex===currentCardIndex?0:10}/>:null
-          )
-        }
+        {deck.map((card, cardIndex) =>
+          cardIndex <= currentCardIndex ? (
+            <Card key={deck[cardIndex].id} card={deck[cardIndex]} zIndex={cardIndex === currentCardIndex ? 0 : 10} />
+          ) : null,
+        )}
       </div>
     );
   }

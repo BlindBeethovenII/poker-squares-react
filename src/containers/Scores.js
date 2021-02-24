@@ -1,27 +1,18 @@
 import { connect } from 'react-redux';
 
-// import {
-//     placeCard,
-// } from '../redux/actions/hand';
-
 import Scores from '../components/Scores';
 
-
 function mapStateToProps(state) {
-  const { scoresRows, scoresCols, scoreTotal } = state.hand;
+  const { hand } = state;
+  const { scoresRows, scoresCols, scoreTotal } = hand;
 
   return {
-    scoresRows, 
-    scoresCols, 
+    scoresRows,
+    scoresCols,
     scoreTotal,
   };
 }
 
-const mapDispatchToProps = {
-  // placeCard,
-};
+const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Scores);
+export default connect(mapStateToProps, mapDispatchToProps)(Scores);

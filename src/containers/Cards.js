@@ -1,14 +1,10 @@
 import { connect } from 'react-redux';
 
-// import {
-//     placeCard,
-// } from '../redux/actions/hand';
-
 import Cards from '../components/Cards';
 
-
 function mapStateToProps(state) {
-  const { deck, currentCardIndex } = state.deal;
+  const { deal } = state;
+  const { deck, currentCardIndex } = deal;
 
   return {
     deck,
@@ -16,11 +12,6 @@ function mapStateToProps(state) {
   };
 }
 
-const mapDispatchToProps = {
-  // placeCard,
-};
+const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Cards);
+export default connect(mapStateToProps, mapDispatchToProps)(Cards);
