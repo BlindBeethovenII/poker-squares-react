@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -13,6 +13,8 @@ const BlankSpace = (props) => {
   // redux provides the placeCard action, which needs the top card in the deal, and also provides the deal next card function
   const { placeCard, dealtCard, dealNextCard } = props;
 
+  const [processedClick, setProcessedClick] = useState(false);
+
   const blankspacestyle = {
     position: 'absolute',
     left: `${col2Left(col)}px`,
@@ -25,11 +27,14 @@ const BlankSpace = (props) => {
     top: '0px',
   };
 
-  // the onClick/onKeyDown function to place a card here, and then deal the next card
+  // the onClick/onKeyDown function to place a card here, and then deal the next card - but only if we've not done that already
   const placeThenDeal = () => {
     // console.log(`onClick for ${col} ${row} called`);
-    placeCard(col, row, dealtCard);
-    dealNextCard(col, row);
+    if (!processedClick) {
+      placeCard(col, row, dealtCard);
+      dealNextCard(col, row);
+      setProcessedClick(true);
+    }
   };
 
   return (
