@@ -11,6 +11,9 @@
 # production
 /build
 
+# git log info generated file
+/src/_generated_git_log.js
+
 # misc
 .DS_Store
 .env.local
