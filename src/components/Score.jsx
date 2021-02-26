@@ -48,7 +48,7 @@ const Score = (props) => {
   }, [score]);
 
   const onAnimationEnd = () => {
-    console.log('onAnimationEnd fired');
+    // console.log('onAnimationEnd fired');
     setUseAnimation(false);
   };
 

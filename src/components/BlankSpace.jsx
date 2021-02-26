@@ -2,9 +2,32 @@ import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
 
+import styled, { keyframes, css } from 'styled-components';
+
 import CardBaseImage from '../images/cards/cardbase.png';
 
 import { col2Left, row2Top } from '../card-functions';
+
+// The pulse
+const pulse = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+`;
+
+const PulseDiv = styled.div`
+  animation: ${({ useAnimation }) =>
+    useAnimation
+      ? css`
+          ${pulse} 0.4s ease-in
+        `
+      : css`
+        none
+      `};
+`;
 
 const BlankSpace = (props) => {
   // compute the card blank space using absolute positioning based on grid (col, row) values
@@ -14,6 +37,8 @@ const BlankSpace = (props) => {
   const { placeCard, dealtCard, dealNextCard } = props;
 
   const [processedClick, setProcessedClick] = useState(false);
+  const [useAnimation, setUseAnimation] = useState(false);
+  const [showCardBase, setShowCardBase] = useState(true);
 
   const blankspacestyle = {
     position: 'absolute',
@@ -31,10 +56,16 @@ const BlankSpace = (props) => {
   const placeThenDeal = () => {
     // console.log(`onClick for ${col} ${row} called`);
     if (!processedClick) {
+      setUseAnimation(true);
       placeCard(col, row, dealtCard);
       dealNextCard(col, row);
       setProcessedClick(true);
     }
+  };
+
+  const onAnimationEnd = () => {
+    // console.log('onAnimationEnd fired');
+    setShowCardBase(false);
   };
 
   return (
@@ -46,8 +77,11 @@ const BlankSpace = (props) => {
       role="button"
       // tabIndex={col + row * 5}
       onClick={placeThenDeal}
-      onKeyDown={placeThenDeal}>
-      <img src={CardBaseImage} alt="cardbase" style={cardbasestyle} />
+      onKeyDown={placeThenDeal}
+      onAnimationEnd={onAnimationEnd}>
+      <PulseDiv useAnimation={useAnimation}>
+        {showCardBase && <img src={CardBaseImage} alt="cardbase" style={cardbasestyle} />}
+      </PulseDiv>
     </div>
   );
 };
