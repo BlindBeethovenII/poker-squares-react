@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -39,6 +39,15 @@ const BlankSpace = (props) => {
   const [processedClick, setProcessedClick] = useState(false);
   const [useAnimation, setUseAnimation] = useState(false);
   const [showCardBase, setShowCardBase] = useState(true);
+
+  // we need to know when a new deck has been dealt, so we can set our state - as we are only rendered once when the app is loaded, and then re-used
+  const { deck } = props;
+  useEffect(() => {
+    // a new deck, so set our state back for re-use
+    setProcessedClick(false);
+    setUseAnimation(false);
+    setShowCardBase(true);
+  }, [deck]);
 
   const blankspacestyle = {
     position: 'absolute',
@@ -89,6 +98,7 @@ const BlankSpace = (props) => {
 BlankSpace.propTypes = {
   col: PropTypes.number.isRequired,
   row: PropTypes.number.isRequired,
+  deck: PropTypes.array.isRequired,
   dealtCard: PropTypes.shape({
     id: PropTypes.string.isRequired,
     suit: PropTypes.string.isRequired,

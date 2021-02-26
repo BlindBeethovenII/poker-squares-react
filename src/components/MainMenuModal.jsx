@@ -27,7 +27,8 @@ const MainMenuModal = (props) => {
     <div>
       <Modal open={mainMenuOpen} onClose={startGame} center>
         <h2>Main Menu</h2>
-        <Button onClick={startGame}>Start Game</Button>
+        <Button onClick={startGame}>Start New Game</Button>
+        <Button onClick={closeMainMenu}>Resume Game</Button>
       </Modal>
     </div>
   );

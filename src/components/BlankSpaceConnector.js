@@ -10,6 +10,7 @@ function mapStateToProps(state) {
   const { deck, currentCardIndex } = deal;
 
   return {
+    deck,
     dealtCard: deck[currentCardIndex],
   };
 }
