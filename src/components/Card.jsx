@@ -2,7 +2,7 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 
-import { Motion, spring } from 'react-motion';
+import { motion } from 'framer-motion';
 
 import CardBlankImage from '../images/cards/cardblank.png';
 
@@ -13,7 +13,7 @@ import { SUIT_CLUBS, SUIT_SPADES } from '../constants';
 const Card = (props) => {
   // everything we are interested in comes from our card (which is defined at this point - it cannot be CARD_NONE)
   const { card } = props;
-  const { suit, number, left: cardLeft, top: cardTop, id } = card;
+  const { suit, number, left, top, id } = card;
 
   const cardbasestyle = {
     position: 'relative',
@@ -48,27 +48,20 @@ const Card = (props) => {
   };
 
   // if we are moving set our zIndex so we appear on top of everything else
-  // const zIndex = this.state.currentVelocity.left !== 0 || this.state.currentVelocity.top !== 0 ? 10 : 0;
-  // nope - currentVelocity is in Motion's state not ours, stupid!
-  // so we are now given our zIndex from Cards as we are dealt
   const { zIndex } = props;
 
   return (
-    <Motion style={{ left: spring(cardLeft), top: spring(cardTop) }}>
-      {({ left, top }) => (
-        <div id={id} style={{ position: 'absolute', left: `${left}px`, top: `${top}px`, zIndex }}>
-          <img src={CardBlankImage} alt="cardblank" style={cardbasestyle} />
-          <div style={cardnumberstyle}>
-            <svg width="60px" height="40px">
-              <text x="10" y="30" fill={cardSuitToFillColour(suit)}>
-                {cardNumberToString(number)}
-              </text>
-            </svg>
-          </div>
-          <img src={cardSuitToImage(suit)} alt="cardsuit" style={cardsuitstyle} />
-        </div>
-      )}
-    </Motion>
+    <motion.div id={id} style={{ position: 'absolute', zIndex }} animate={{ left, top }}>
+      <img src={CardBlankImage} alt="cardblank" style={cardbasestyle} />
+      <div style={cardnumberstyle}>
+        <svg width="60px" height="40px">
+          <text x="10" y="30" fill={cardSuitToFillColour(suit)}>
+            {cardNumberToString(number)}
+          </text>
+        </svg>
+      </div>
+      <img src={cardSuitToImage(suit)} alt="cardsuit" style={cardsuitstyle} />
+    </motion.div>
   );
 };
 
