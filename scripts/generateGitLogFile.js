@@ -27,6 +27,9 @@ exec('git log -1 --oneline', (err, stdout /* , stderr */) => {
   const date = new Date();
 
   // either way, write some output
-  fs.writeFileSync(outputFileName, `export default {\n  logMessage: '${logMessage}',\n  date: '${date}',\n};\n`);
+  fs.writeFileSync(
+    outputFileName,
+    `/* eslint-disable prettier/prettier */\nexport default {\n  logMessage: '${logMessage}',\n  date: '${date}',\n};\n`,
+  );
   console.log('./scripts/generateGitLogFile.js | File Generated');
 });
