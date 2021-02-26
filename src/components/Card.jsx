@@ -51,7 +51,7 @@ const Card = (props) => {
   const { zIndex } = props;
 
   return (
-    <motion.div id={id} style={{ position: 'absolute', zIndex }} animate={{ left, top }}>
+    <motion.div id={id} style={{ position: 'absolute', zIndex }} animate={{ left, top }} initial={false}>
       <img src={CardBlankImage} alt="cardblank" style={cardbasestyle} />
       <div style={cardnumberstyle}>
         <svg width="60px" height="40px">
