@@ -1,0 +1,2 @@
+export const OPEN_MAIN_MENU = 'OPEN_MAIN_MENU';
+export const CLOSE_MAIN_MENU = 'CLOSE_MAIN_MENU';

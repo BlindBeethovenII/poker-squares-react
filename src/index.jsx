@@ -4,6 +4,8 @@ import { render } from 'react-dom';
 
 import { Provider } from 'react-redux';
 
+import 'react-responsive-modal/styles.css';
+
 import configureStore from './redux/store/configure-store';
 import initialState from './redux/store/initial-state';
 

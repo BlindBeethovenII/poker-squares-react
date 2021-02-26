@@ -95,9 +95,13 @@ BlankSpace.propTypes = {
     number: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired,
     top: PropTypes.number.isRequired,
-  }).isRequired,
+  }),
   placeCard: PropTypes.func.isRequired,
   dealNextCard: PropTypes.func.isRequired,
+};
+
+BlankSpace.defaultProps = {
+  dealtCard: null,
 };
 
 export default BlankSpace;

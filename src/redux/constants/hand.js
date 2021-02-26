@@ -1,2 +1,2 @@
-// eslint-disable-next-line import/prefer-default-export
+export const RESET_HAND = 'RESET_HAND';
 export const PLACE_CARD = 'PLACE_CARD';

@@ -4,6 +4,7 @@ import PlayArea from './components/PlayArea';
 import Cards from './components/CardsConnector';
 import Scores from './components/ScoresConnector';
 import GitInfo from './components/GitInfo';
+import MainMenuModal from './components/MainMenuModalConnector';
 
 const App = () => (
   <div>
@@ -11,6 +12,7 @@ const App = () => (
     <Cards />
     <Scores />
     <GitInfo />
+    <MainMenuModal />
   </div>
 );
 

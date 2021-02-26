@@ -1,13 +1,35 @@
-import { PLACE_CARD } from '../constants/hand';
+import { RESET_HAND, PLACE_CARD } from '../constants/hand';
 import { cloneByJSON } from '../../useful-js-functions';
 import { updateHandScores } from '../../card-functions';
+import { CARD_NONE } from '../../constants';
 
-const initialState = {
-  placedCards: [],
-  scoresCols: [],
-  scoresRows: [],
+// helper functions for the initial state and resetHand
+const newPlacedCards = () => [
+  [CARD_NONE, CARD_NONE, CARD_NONE, CARD_NONE, CARD_NONE],
+  [CARD_NONE, CARD_NONE, CARD_NONE, CARD_NONE, CARD_NONE],
+  [CARD_NONE, CARD_NONE, CARD_NONE, CARD_NONE, CARD_NONE],
+  [CARD_NONE, CARD_NONE, CARD_NONE, CARD_NONE, CARD_NONE],
+  [CARD_NONE, CARD_NONE, CARD_NONE, CARD_NONE, CARD_NONE],
+];
+
+const newScoresRows = () => [0, 0, 0, 0, 0];
+
+const newScoresCols = () => [0, 0, 0, 0, 0];
+
+export const initialState = {
+  placedCards: newPlacedCards(),
+  scoresRows: newScoresRows(),
+  scoresCols: newScoresCols(),
   scoreTotal: 0,
 };
+
+const resetHand = (state) => ({
+  ...state,
+  placedCards: newPlacedCards(),
+  scoresRows: newScoresRows(),
+  scoresCols: newScoresCols(),
+  scoreTotal: 0,
+});
 
 const placeCard = (state, action) => {
   const placedCards = cloneByJSON(state.placedCards);
@@ -31,6 +53,9 @@ const placeCard = (state, action) => {
 
 const reducer = (state = initialState, action = '') => {
   switch (action.type) {
+    case RESET_HAND:
+      return resetHand(state);
+
     case PLACE_CARD:
       return placeCard(state, action);
 

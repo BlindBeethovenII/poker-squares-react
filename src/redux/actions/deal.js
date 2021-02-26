@@ -1,9 +1,8 @@
-import { SET_DECK, DEAL_NEXT_CARD } from '../constants/deal';
+import { RESET_DECK, DEAL_NEXT_CARD } from '../constants/deal';
 
-// action to set the initial deck
-export const setDeck = (deck = []) => ({
-  type: SET_DECK,
-  deck,
+// action to reset desk to its initial state, with a random dealt hand
+export const resetDeck = () => ({
+  type: RESET_DECK,
 });
 
 // action to deal the next card

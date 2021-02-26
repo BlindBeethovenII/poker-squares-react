@@ -1,15 +1,35 @@
-import { SET_DECK, DEAL_NEXT_CARD } from '../constants/deal';
+import shuffle from 'lodash.shuffle';
+
+import { RESET_DECK, DEAL_NEXT_CARD } from '../constants/deal';
 import { cloneByJSON } from '../../useful-js-functions';
 import { col2Left, row2Top } from '../../card-functions';
+import { SUITS, NUMBERS, DEAL_COL, DEAL_ROW } from '../../constants';
 
-const initialState = {
-  deck: [],
-  currentCardIndex: -1,
+// helper function to create a suffled deck
+const newDeckShuffled = () => {
+  // put all the cards in the deck, placing at the dealing position
+  let deck = [];
+  SUITS.map((suit) =>
+    NUMBERS.map((number) =>
+      deck.push({ suit, number, left: col2Left(DEAL_COL), top: row2Top(DEAL_ROW), id: `card_${suit}_${number}` }),
+    ),
+  );
+
+  // now shuffle them
+  deck = shuffle(deck);
+
+  return deck;
 };
 
-const setDeck = (state, action) => ({
+export const initialState = {
+  deck: [], // start game with no deck dealt
+  currentCardIndex: 0,
+};
+
+const resetDeck = (state) => ({
   ...state,
-  deck: action.deck,
+  deck: newDeckShuffled(),
+  currentCardIndex: 0,
 });
 
 const dealNextCard = (state, action) => {
@@ -29,8 +49,8 @@ const dealNextCard = (state, action) => {
 
 const reducer = (state = initialState, action = '') => {
   switch (action.type) {
-    case SET_DECK:
-      return setDeck(state, action);
+    case RESET_DECK:
+      return resetDeck(state);
 
     case DEAL_NEXT_CARD:
       return dealNextCard(state, action);
