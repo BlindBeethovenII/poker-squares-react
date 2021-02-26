@@ -1,21 +1,21 @@
 {
   "files": {
     "main.css": "/poker-squares-react/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/poker-squares-react/static/js/main.11bccf09.chunk.js",
-    "main.js.map": "/poker-squares-react/static/js/main.11bccf09.chunk.js.map",
+    "main.js": "/poker-squares-react/static/js/main.adb9e258.chunk.js",
+    "main.js.map": "/poker-squares-react/static/js/main.adb9e258.chunk.js.map",
     "runtime-main.js": "/poker-squares-react/static/js/runtime-main.41186991.js",
     "runtime-main.js.map": "/poker-squares-react/static/js/runtime-main.41186991.js.map",
-    "static/js/2.0d07e254.chunk.js": "/poker-squares-react/static/js/2.0d07e254.chunk.js",
-    "static/js/2.0d07e254.chunk.js.map": "/poker-squares-react/static/js/2.0d07e254.chunk.js.map",
+    "static/js/2.d5870e21.chunk.js": "/poker-squares-react/static/js/2.d5870e21.chunk.js",
+    "static/js/2.d5870e21.chunk.js.map": "/poker-squares-react/static/js/2.d5870e21.chunk.js.map",
     "index.html": "/poker-squares-react/index.html",
     "static/css/main.6dea0f05.chunk.css.map": "/poker-squares-react/static/css/main.6dea0f05.chunk.css.map",
-    "static/js/2.0d07e254.chunk.js.LICENSE.txt": "/poker-squares-react/static/js/2.0d07e254.chunk.js.LICENSE.txt",
+    "static/js/2.d5870e21.chunk.js.LICENSE.txt": "/poker-squares-react/static/js/2.d5870e21.chunk.js.LICENSE.txt",
     "static/media/playarea.b2316263.png": "/poker-squares-react/static/media/playarea.b2316263.png"
   },
   "entrypoints": [
     "static/js/runtime-main.41186991.js",
-    "static/js/2.0d07e254.chunk.js",
+    "static/js/2.d5870e21.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.11bccf09.chunk.js"
+    "static/js/main.adb9e258.chunk.js"
   ]
 }
