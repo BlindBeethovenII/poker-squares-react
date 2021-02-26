@@ -29,14 +29,6 @@ export function row2Top(row) {
   return 20 + row * CARD_HEIGHT;
 }
 
-// select a card at random from the given deck, returning the card, and the new deck
-export function selectRandomCardFromDeck(deck) {
-  const randomIndex = Math.floor(Math.random() * deck.length);
-  const card = deck[randomIndex];
-  const newDeck = deck.filter((value, index) => index !== randomIndex);
-  return { card, newDeck };
-}
-
 // sort the hand, putting 'NONE' cards at the end
 function sortHand(hand) {
   // do bubble sort to order the cards, coping with 'NONE' cards
