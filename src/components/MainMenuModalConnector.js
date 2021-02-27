@@ -7,11 +7,13 @@ import { closeMainMenu } from '../redux/actions/ui';
 import MainMenuModal from './MainMenuModal';
 
 function mapStateToProps(state) {
-  const { ui } = state;
+  const { ui, deal } = state;
   const { mainMenuOpen } = ui;
+  const { deck } = deal;
 
   return {
     mainMenuOpen,
+    gameInProgress: !!deck?.length,
   };
 }
 

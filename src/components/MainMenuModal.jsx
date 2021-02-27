@@ -16,7 +16,7 @@ const Button = styled.button`
 `;
 
 const MainMenuModal = (props) => {
-  const { mainMenuOpen, resetBoard, closeMainMenu } = props;
+  const { mainMenuOpen, gameInProgress, resetBoard, closeMainMenu } = props;
 
   const startGame = () => {
     resetBoard();
@@ -28,7 +28,7 @@ const MainMenuModal = (props) => {
       <Modal open={mainMenuOpen} onClose={startGame} center>
         <h2>Main Menu</h2>
         <Button onClick={startGame}>Start New Game</Button>
-        <Button onClick={closeMainMenu}>Resume Game</Button>
+        {gameInProgress && <Button onClick={closeMainMenu}>Resume Game</Button>}
       </Modal>
     </div>
   );
@@ -36,6 +36,7 @@ const MainMenuModal = (props) => {
 
 MainMenuModal.propTypes = {
   mainMenuOpen: PropTypes.bool.isRequired,
+  gameInProgress: PropTypes.bool.isRequired,
   resetBoard: PropTypes.func.isRequired,
   closeMainMenu: PropTypes.func.isRequired,
 };
