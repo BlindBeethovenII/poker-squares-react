@@ -23,12 +23,19 @@ const MainMenuModal = (props) => {
     closeMainMenu();
   };
 
+  const closeIFGameInProgress = () => {
+    // this way of closing is only possible if a game is in progress
+    if (gameInProgress) {
+      closeMainMenu();
+    }
+  };
+
   return (
     <div>
-      <Modal open={mainMenuOpen} onClose={startGame} center>
+      <Modal open={mainMenuOpen} onClose={closeIFGameInProgress} center closeOnEsc={gameInProgress}>
         <h2>Main Menu</h2>
         <Button onClick={startGame}>Start New Game</Button>
-        {gameInProgress && <Button onClick={closeMainMenu}>Resume Game</Button>}
+        {gameInProgress && <Button onClick={closeIFGameInProgress}>Resume Game</Button>}
       </Modal>
     </div>
   );
