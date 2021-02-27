@@ -34,18 +34,18 @@ const borderleft = {
   top: '14px',
   left: '8px',
   width: '10px',
-  height: '516px',
+  height: '602px',
 };
 
 const borderbottomleft = {
   position: 'absolute',
-  top: '530px',
+  top: '616px',
   left: '8px',
 };
 
 const borderbottom = {
   position: 'absolute',
-  top: '530px',
+  top: '616px',
   left: '14px',
   width: '490px',
   height: '10px',
@@ -59,7 +59,7 @@ const bordertopright = {
 
 const borderbottomright = {
   position: 'absolute',
-  top: '530px',
+  top: '616px',
   left: '504px',
 };
 
@@ -68,20 +68,20 @@ const borderright = {
   top: '14px',
   left: '504px',
   width: '10px',
-  height: '516px',
+  height: '602px',
 };
 
 const playbackgroundsvg = {
   position: 'absolute',
   top: '4px',
   left: '8px',
-  width: '506px',
-  height: '536px',
+  width: '536px',
+  height: '622px',
 };
 
 const playbackgroundrect = {
   width: '506px',
-  height: '536px',
+  height: '622px',
   fill: 'rgb(85,107,47)',
 };
 

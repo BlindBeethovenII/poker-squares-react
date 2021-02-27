@@ -1,14 +1,17 @@
 import React from 'react';
 import moment from 'moment';
 
-import { CARD_WIDTH, CARD_HEIGHT } from '../constants';
+import { col2Left, row2Top } from '../card-functions';
 
 import gitLog from '../_generated_git_log';
 
+const left = col2Left(6) + 27;
+const top = row2Top(6) + 44;
+
 const builtstyle = {
   position: 'absolute',
-  left: `${28 + 6 * CARD_WIDTH + 20}px`,
-  top: `${40 + 5 * CARD_HEIGHT + 25}px`,
+  left: `${left}px`,
+  top: `${top}px`,
   width: '40px',
   height: '40px',
   fontWeight: 'italic',
@@ -19,8 +22,8 @@ const builtstyle = {
 
 const datestyle = {
   position: 'absolute',
-  left: `${28 + 6 * CARD_WIDTH + 20}px`,
-  top: `${40 + 5 * CARD_HEIGHT + 40}px`,
+  left: `${left}px`,
+  top: `${top + 15}px`,
   width: '40px',
   height: '40px',
   fontWeight: 'italic',

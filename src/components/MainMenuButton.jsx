@@ -4,12 +4,15 @@ import PropTypes from 'prop-types';
 
 import styled from 'styled-components';
 
-import { CARD_WIDTH } from '../constants';
+import { col2Left, row2Top } from '../card-functions';
+
+const left = col2Left(2) + 47;
+const top = row2Top(6) + 10;
 
 const divstyle = {
   position: 'absolute',
-  left: `${28 + 5 * CARD_WIDTH + 40}px`,
-  top: '20px',
+  left: `${left}px`,
+  top: `${top}px`,
   width: '40px',
   height: '40px',
 };

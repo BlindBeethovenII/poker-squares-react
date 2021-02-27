@@ -34,7 +34,8 @@ const MainMenuModal = (props) => {
     <div>
       <Modal open={mainMenuOpen} onClose={closeIFGameInProgress} center closeOnEsc={gameInProgress}>
         <h2>Main Menu</h2>
-        <Button onClick={startGame}>Start New Game</Button>
+        <Button onClick={startGame}>Start New Solo Game</Button>
+        <Button onClick={startGame}>Start New Peer Game</Button>
         {gameInProgress && <Button onClick={closeIFGameInProgress}>Resume Game</Button>}
       </Modal>
     </div>
