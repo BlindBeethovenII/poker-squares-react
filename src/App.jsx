@@ -7,6 +7,7 @@ import GitInfo from './components/GitInfo';
 import MainMenuButton from './components/MainMenuButtonConnector';
 import MainMenuModal from './components/MainMenuModalConnector';
 import HostPeerGameModal from './components/HostPeerGameModalConnector';
+import JoinPeerGameModal from './components/JoinPeerGameModalConnector';
 
 const App = () => (
   <div>
@@ -17,6 +18,7 @@ const App = () => (
     <MainMenuButton />
     <MainMenuModal />
     <HostPeerGameModal />
+    <JoinPeerGameModal />
   </div>
 );
 
