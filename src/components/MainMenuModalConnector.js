@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 
 import { resetDeck } from '../redux/actions/deal';
 import { resetHand } from '../redux/actions/hand';
-import { closeMainMenu } from '../redux/actions/ui';
+import { closeMainMenu, openHostPeerGame } from '../redux/actions/ui';
 
 import MainMenuModal from './MainMenuModal';
 
@@ -18,13 +18,19 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  resetBoard: () => {
+  startGame: () => {
     dispatch(resetDeck());
     dispatch(resetHand());
+    dispatch(closeMainMenu());
   },
 
   closeMainMenu: () => {
     dispatch(closeMainMenu());
+  },
+
+  hostPeerGame: () => {
+    dispatch(closeMainMenu());
+    dispatch(openHostPeerGame());
   },
 });
 

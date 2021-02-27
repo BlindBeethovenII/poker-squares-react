@@ -1,4 +1,4 @@
-import { OPEN_MAIN_MENU, CLOSE_MAIN_MENU } from '../constants/ui';
+import { OPEN_MAIN_MENU, CLOSE_MAIN_MENU, OPEN_HOST_PEER_GAME, CLOSE_HOST_PEER_GAME } from '../constants/ui';
 
 export const openMainMenu = () => ({
   type: OPEN_MAIN_MENU,
@@ -6,4 +6,12 @@ export const openMainMenu = () => ({
 
 export const closeMainMenu = () => ({
   type: CLOSE_MAIN_MENU,
+});
+
+export const openHostPeerGame = () => ({
+  type: OPEN_HOST_PEER_GAME,
+});
+
+export const closeHostPeerGame = () => ({
+  type: CLOSE_HOST_PEER_GAME,
 });

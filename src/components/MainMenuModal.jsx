@@ -5,6 +5,16 @@ import PropTypes from 'prop-types';
 import { Modal } from 'react-responsive-modal';
 import styled from 'styled-components';
 
+const Title = styled.h2`
+  background: white;
+  color: palevioletred;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: 2px solid palevioletred;
+  border-radius: 3px;
+  text-align: center;
+`;
+
 const Button = styled.button`
   background: palevioletred;
   color: white;
@@ -16,14 +26,9 @@ const Button = styled.button`
 `;
 
 const MainMenuModal = (props) => {
-  const { mainMenuOpen, gameInProgress, resetBoard, closeMainMenu } = props;
+  const { mainMenuOpen, gameInProgress, startGame, closeMainMenu, hostPeerGame } = props;
 
-  const startGame = () => {
-    resetBoard();
-    closeMainMenu();
-  };
-
-  const closeIFGameInProgress = () => {
+  const closeIfGameInProgress = () => {
     // this way of closing is only possible if a game is in progress
     if (gameInProgress) {
       closeMainMenu();
@@ -32,11 +37,12 @@ const MainMenuModal = (props) => {
 
   return (
     <div>
-      <Modal open={mainMenuOpen} onClose={closeIFGameInProgress} center closeOnEsc={gameInProgress}>
-        <h2>Main Menu</h2>
+      <Modal open={mainMenuOpen} onClose={closeIfGameInProgress} center closeOnEsc={gameInProgress}>
+        <Title>Main Menu</Title>
         <Button onClick={startGame}>Start New Solo Game</Button>
-        <Button onClick={startGame}>Start New Peer Game</Button>
-        {gameInProgress && <Button onClick={closeIFGameInProgress}>Resume Game</Button>}
+        <Button onClick={hostPeerGame}>Host Peer Game</Button>
+        <Button onClick={startGame}>Join Peer Game</Button>
+        {gameInProgress && <Button onClick={closeIfGameInProgress}>Resume Game</Button>}
       </Modal>
     </div>
   );
@@ -45,8 +51,9 @@ const MainMenuModal = (props) => {
 MainMenuModal.propTypes = {
   mainMenuOpen: PropTypes.bool.isRequired,
   gameInProgress: PropTypes.bool.isRequired,
-  resetBoard: PropTypes.func.isRequired,
+  startGame: PropTypes.func.isRequired,
   closeMainMenu: PropTypes.func.isRequired,
+  hostPeerGame: PropTypes.func.isRequired,
 };
 
 export default MainMenuModal;
