@@ -7,21 +7,21 @@ import styled from 'styled-components';
 
 const Title = styled.h2`
   background: white;
-  color: palevioletred;
+  color: #761d38;
   margin: 1em;
   padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+  border: 2px solid #761d38;
   border-radius: 3px;
   text-align: center;
 `;
 
 const Button = styled.button`
-  background: palevioletred;
+  background: #761d38;
   color: white;
   font-size: 1em;
   margin: 1em;
   padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+  border: 2px solid #761d38;
   border-radius: 3px;
 `;
 
