@@ -6,7 +6,7 @@ import styled, { keyframes, css } from 'styled-components';
 
 import CardBaseImage from '../images/cards/cardbase.png';
 
-import { col2Left, row2Top } from '../card-functions';
+import { col2Left, row2Top } from '../shared/card-functions';
 
 // The pulse
 const pulse = keyframes`

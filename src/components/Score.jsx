@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import styled, { keyframes, css } from 'styled-components';
 
-import { CARD_WIDTH, CARD_HEIGHT } from '../constants';
+import { CARD_WIDTH, CARD_HEIGHT } from '../shared/constants';
 
 // The pulse based on the scoreColour prop
 const pulse = keyframes`

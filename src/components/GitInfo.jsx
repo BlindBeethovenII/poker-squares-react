@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-import { col2Left, row2Top } from '../card-functions';
+import { col2Left, row2Top } from '../shared/card-functions';
 
 import gitLog from '../_generated_git_log';
 

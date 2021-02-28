@@ -11,7 +11,7 @@ import BorderTopRightImage from '../images/borders/topright.png';
 import BorderBottomRightImage from '../images/borders/bottomright.png';
 import BorderRightImage from '../images/borders/right.png';
 
-import { GRID_INDEXES } from '../constants';
+import { GRID_INDEXES } from '../shared/constants';
 
 import BlankSpace from './BlankSpaceConnector';
 

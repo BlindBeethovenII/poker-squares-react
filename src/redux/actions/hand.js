@@ -1,5 +1,5 @@
 import { RESET_HAND, PLACE_CARD } from '../constants/hand';
-import { SUIT_NONE, NUMBER_NONE } from '../../constants';
+import { SUIT_NONE, NUMBER_NONE } from '../../shared/constants';
 
 // action to reset hand to its initial state
 export const resetHand = () => ({

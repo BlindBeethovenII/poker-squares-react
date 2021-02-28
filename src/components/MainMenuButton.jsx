@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import styled from 'styled-components';
 
-import { col2Left, row2Top } from '../card-functions';
+import { col2Left, row2Top } from '../shared/card-functions';
 
 const left = col2Left(2) + 47;
 const top = row2Top(6) + 10;

@@ -6,9 +6,9 @@ import { motion } from 'framer-motion';
 
 import CardBlankImage from '../images/cards/cardblank.png';
 
-import { cardNumberToString, cardSuitToImage, cardSuitToFillColour } from '../card-functions';
+import { cardNumberToString, cardSuitToImage, cardSuitToFillColour } from '../shared/card-functions';
 
-import { SUIT_CLUBS, SUIT_SPADES } from '../constants';
+import { SUIT_CLUBS, SUIT_SPADES } from '../shared/constants';
 
 const Card = (props) => {
   // everything we are interested in comes from our card (which is defined at this point - it cannot be CARD_NONE)

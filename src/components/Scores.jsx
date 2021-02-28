@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Score from './Score';
-import { keyFromIndex } from '../card-functions';
+import { keyFromIndex } from '../shared/card-functions';
 
 const Scores = (props) => {
   // redux provides the hand values we are interested in

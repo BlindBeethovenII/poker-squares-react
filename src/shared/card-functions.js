@@ -1,5 +1,7 @@
 // useful card functions
 
+import shuffle from 'lodash.shuffle';
+
 import {
   CARD_WIDTH,
   CARD_HEIGHT,
@@ -12,12 +14,16 @@ import {
   NUMBER_J,
   NUMBER_Q,
   NUMBER_K,
+  SUITS,
+  NUMBERS,
+  DEAL_COL,
+  DEAL_ROW,
 } from './constants';
 
-import CardSuitSpadesImage from './images/cards/spades.png';
-import CardSuitHeartsImage from './images/cards/hearts.png';
-import CardSuitDiamondsImage from './images/cards/diamonds.png';
-import CardSuitClubsImage from './images/cards/clubs.png';
+import CardSuitSpadesImage from '../images/cards/spades.png';
+import CardSuitHeartsImage from '../images/cards/hearts.png';
+import CardSuitDiamondsImage from '../images/cards/diamonds.png';
+import CardSuitClubsImage from '../images/cards/clubs.png';
 
 // calc left based on given column
 export function col2Left(col) {
@@ -322,3 +328,19 @@ export const cardSuitToFillColour = (suit) => {
 
 // Simple hack to avoid the "Do not use Array index in keys" eslint error
 export const keyFromIndex = (id, index) => `${id}_${index}`;
+
+// helper function to create a suffled deck
+export const createShuffledDeck = () => {
+  // put all the cards in the deck, placing at the dealing position
+  let deck = [];
+  SUITS.map((suit) =>
+    NUMBERS.map((number) =>
+      deck.push({ suit, number, left: col2Left(DEAL_COL), top: row2Top(DEAL_ROW), id: `card_${suit}_${number}` }),
+    ),
+  );
+
+  // now shuffle them
+  deck = shuffle(deck);
+
+  return deck;
+};

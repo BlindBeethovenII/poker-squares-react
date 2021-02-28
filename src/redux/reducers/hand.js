@@ -1,7 +1,7 @@
 import { RESET_HAND, PLACE_CARD } from '../constants/hand';
 import { cloneByJSON } from '../../useful-js-functions';
-import { updateHandScores } from '../../card-functions';
-import { CARD_NONE } from '../../constants';
+import { updateHandScores } from '../../shared/card-functions';
+import { CARD_NONE } from '../../shared/constants';
 
 // helper functions for the initial state and resetHand
 const newPlacedCards = () => [
