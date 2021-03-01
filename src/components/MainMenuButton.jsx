@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import PropTypes from 'prop-types';
 
 import styled from 'styled-components';
 
 import { col2Left, row2Top } from '../shared/card-functions';
+import UIStateContext from '../context/UIStateContext';
 
 const left = col2Left(2) + 47;
 const top = row2Top(6) + 10;
@@ -28,12 +29,14 @@ const Button = styled.button`
 `;
 
 const MainMenuModal = (props) => {
-  const { gameInProgress, openMainMenu } = props;
+  const { gameInProgress } = props;
+
+  const { setMainMenuOpen } = useContext(UIStateContext);
 
   if (gameInProgress) {
     return (
       <div style={divstyle}>
-        <Button onClick={openMainMenu}>Main Menu</Button>
+        <Button onClick={() => setMainMenuOpen(true)}>Main Menu</Button>
       </div>
     );
   }
@@ -44,7 +47,6 @@ const MainMenuModal = (props) => {
 
 MainMenuModal.propTypes = {
   gameInProgress: PropTypes.bool.isRequired,
-  openMainMenu: PropTypes.func.isRequired,
 };
 
 export default MainMenuModal;

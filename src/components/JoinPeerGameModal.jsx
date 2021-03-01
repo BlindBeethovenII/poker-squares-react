@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Peer from 'peerjs';
 
 import { isDeckMessage, getDeckFromMessage } from '../shared/peer-messages';
+import UIStateContext from '../context/UIStateContext';
 
 const Button = styled.button`
   background: #761d38;
@@ -48,6 +49,8 @@ const JoinPeerGameModal = (props) => {
   const [disconnected, setDisconnected] = useState(false);
   const [closed, setClosed] = useState(false);
   const [readyToPlay, setReadyToPlay] = useState(false);
+
+  const { setMainMenuOpen } = useContext(UIStateContext);
 
   useEffect(() => {
     if (joinPeerGameOpen) {
@@ -115,9 +118,15 @@ const JoinPeerGameModal = (props) => {
     });
   };
 
+  // TODO decide where to put this
+  const localCloseJoinPeerGame = () => {
+    setMainMenuOpen(true);
+    closeJoinPeerGame();
+  };
+
   return (
     <div>
-      <Modal open={joinPeerGameOpen} onClose={closeJoinPeerGame} center>
+      <Modal open={joinPeerGameOpen} onClose={localCloseJoinPeerGame} center>
         <Title>Join Peer Game</Title>
         <Button onClick={join}>Join</Button>
         {brokerId && <Info>Broker Id: {brokerId}</Info>}
@@ -126,7 +135,7 @@ const JoinPeerGameModal = (props) => {
         {closed && <Info>Closed</Info>}
         {error && <Info>Error: {error.type}</Info>}
         {readyToPlay && <Button onClick={playGame}>Play</Button>}
-        <Button onClick={closeJoinPeerGame}>Cancel</Button>
+        <Button onClick={localCloseJoinPeerGame}>Cancel</Button>
       </Modal>
     </div>
   );

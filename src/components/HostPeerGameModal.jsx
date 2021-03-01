@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -8,6 +8,7 @@ import Peer from 'peerjs';
 
 import { createShuffledDeck } from '../shared/card-functions';
 import { createDeckMessage } from '../shared/peer-messages';
+import UIStateContext from '../context/UIStateContext';
 
 const Button = styled.button`
   background: #761d38;
@@ -49,6 +50,8 @@ const HostPeerGameModal = (props) => {
   const [disconnected, setDisconnected] = useState(false);
   const [closed, setClosed] = useState(false);
   const [readyToPlay, setReadyToPlay] = useState(false);
+
+  const { setMainMenuOpen } = useContext(UIStateContext);
 
   useEffect(() => {
     if (hostPeerGameOpen) {
@@ -100,9 +103,15 @@ const HostPeerGameModal = (props) => {
     });
   };
 
+  // TODO decide where to put this
+  const localCloseHostPeerGame = () => {
+    setMainMenuOpen(true);
+    closeHostPeerGame();
+  };
+
   return (
     <div>
-      <Modal open={hostPeerGameOpen} onClose={closeHostPeerGame} center>
+      <Modal open={hostPeerGameOpen} onClose={localCloseHostPeerGame} center>
         <Title>Host Peer Game</Title>
         <Button onClick={host}>Host</Button>
         {brokerId && <Info>Broker Id: {brokerId}</Info>}
@@ -111,7 +120,7 @@ const HostPeerGameModal = (props) => {
         {closed && <Info>Closed</Info>}
         {error && <Info>Error: {error.type}</Info>}
         {readyToPlay && <Button onClick={playGame}>Play</Button>}
-        <Button onClick={closeHostPeerGame}>Cancel</Button>
+        <Button onClick={localCloseHostPeerGame}>Cancel</Button>
       </Modal>
     </div>
   );

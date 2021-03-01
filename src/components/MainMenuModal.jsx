@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import PropTypes from 'prop-types';
 
 import { Modal } from 'react-responsive-modal';
 import styled from 'styled-components';
+
+import UIStateContext from '../context/UIStateContext';
 
 const Title = styled.h2`
   background: white;
@@ -26,13 +28,31 @@ const Button = styled.button`
 `;
 
 const MainMenuModal = (props) => {
-  const { mainMenuOpen, gameInProgress, startGame, closeMainMenu, hostPeerGame, joinPeerGame } = props;
+  const { gameInProgress, startGame, hostPeerGame, joinPeerGame } = props;
+
+  const { mainMenuOpen, setMainMenuOpen } = useContext(UIStateContext);
 
   const closeIfGameInProgress = () => {
     // this way of closing is only possible if a game is in progress
     if (gameInProgress) {
-      closeMainMenu();
+      setMainMenuOpen(false);
     }
+  };
+
+  // TODO decide where to put this when all are context
+  const localStartGame = () => {
+    setMainMenuOpen(false);
+    startGame();
+  };
+
+  const localHostPeerGame = () => {
+    setMainMenuOpen(false);
+    hostPeerGame();
+  };
+
+  const localJoinPeerGame = () => {
+    setMainMenuOpen(false);
+    joinPeerGame();
   };
 
   return (
@@ -44,9 +64,9 @@ const MainMenuModal = (props) => {
         closeOnEsc={gameInProgress}
         showCloseIcon={gameInProgress}>
         <Title>Main Menu</Title>
-        <Button onClick={startGame}>Start New Solo Game</Button>
-        <Button onClick={hostPeerGame}>Host Peer Game</Button>
-        <Button onClick={joinPeerGame}>Join Peer Game</Button>
+        <Button onClick={localStartGame}>Start New Solo Game</Button>
+        <Button onClick={localHostPeerGame}>Host Peer Game</Button>
+        <Button onClick={localJoinPeerGame}>Join Peer Game</Button>
         {gameInProgress && <Button onClick={closeIfGameInProgress}>Resume Game</Button>}
       </Modal>
     </div>
@@ -54,10 +74,8 @@ const MainMenuModal = (props) => {
 };
 
 MainMenuModal.propTypes = {
-  mainMenuOpen: PropTypes.bool.isRequired,
   gameInProgress: PropTypes.bool.isRequired,
   startGame: PropTypes.func.isRequired,
-  closeMainMenu: PropTypes.func.isRequired,
   hostPeerGame: PropTypes.func.isRequired,
   joinPeerGame: PropTypes.func.isRequired,
 };

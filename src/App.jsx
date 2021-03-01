@@ -9,8 +9,10 @@ import MainMenuModal from './components/MainMenuModalConnector';
 import HostPeerGameModal from './components/HostPeerGameModalConnector';
 import JoinPeerGameModal from './components/JoinPeerGameModalConnector';
 
+import UIStateContextProvider from './context/UIStateContextProvider';
+
 const App = () => (
-  <div>
+  <UIStateContextProvider>
     <PlayArea />
     <Cards />
     <Scores />
@@ -19,7 +21,7 @@ const App = () => (
     <MainMenuModal />
     <HostPeerGameModal />
     <JoinPeerGameModal />
-  </div>
+  </UIStateContextProvider>
 );
 
 export default App;

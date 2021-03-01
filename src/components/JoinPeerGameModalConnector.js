@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import { closeJoinPeerGame, openMainMenu } from '../redux/actions/ui';
+import { closeJoinPeerGame } from '../redux/actions/ui';
 import { setDeck } from '../redux/actions/deal';
 
 import JoinPeerGameModal from './JoinPeerGameModal';
@@ -25,7 +25,6 @@ const mapDispatchToProps = (dispatch) => ({
 
   closeJoinPeerGame: () => {
     dispatch(closeJoinPeerGame());
-    dispatch(openMainMenu());
   },
 });
 

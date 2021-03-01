@@ -1,7 +1,5 @@
 import { connect } from 'react-redux';
 
-import { openMainMenu } from '../redux/actions/ui';
-
 import MainMenuButton from './MainMenuButton';
 
 function mapStateToProps(state) {
@@ -13,10 +11,4 @@ function mapStateToProps(state) {
   };
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  openMainMenu: () => {
-    dispatch(openMainMenu());
-  },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(MainMenuButton);
+export default connect(mapStateToProps, undefined)(MainMenuButton);
