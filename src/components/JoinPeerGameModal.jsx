@@ -50,7 +50,7 @@ const JoinPeerGameModal = (props) => {
   const [closed, setClosed] = useState(false);
   const [readyToPlay, setReadyToPlay] = useState(false);
 
-  const { setMainMenuOpen } = useContext(GameStateContext);
+  const { openMainMenu } = useContext(GameStateContext);
 
   useEffect(() => {
     if (joinPeerGameOpen) {
@@ -120,7 +120,7 @@ const JoinPeerGameModal = (props) => {
 
   // TODO decide where to put this
   const localCloseJoinPeerGame = () => {
-    setMainMenuOpen(true);
+    openMainMenu();
     closeJoinPeerGame();
   };
 

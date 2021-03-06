@@ -30,28 +30,28 @@ const Button = styled.button`
 const MainMenuModal = (props) => {
   const { gameInProgress, startGame, hostPeerGame, joinPeerGame } = props;
 
-  const { mainMenuOpen, setMainMenuOpen } = useContext(GameStateContext);
+  const { mainMenuOpen, closeMainMenu } = useContext(GameStateContext);
 
   const closeIfGameInProgress = () => {
     // this way of closing is only possible if a game is in progress
     if (gameInProgress) {
-      setMainMenuOpen(false);
+      closeMainMenu();
     }
   };
 
   // TODO decide where to put this when all are context
   const localStartGame = () => {
-    setMainMenuOpen(false);
+    closeMainMenu();
     startGame();
   };
 
   const localHostPeerGame = () => {
-    setMainMenuOpen(false);
+    closeMainMenu();
     hostPeerGame();
   };
 
   const localJoinPeerGame = () => {
-    setMainMenuOpen(false);
+    closeMainMenu();
     joinPeerGame();
   };
 

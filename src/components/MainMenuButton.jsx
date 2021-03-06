@@ -31,12 +31,12 @@ const Button = styled.button`
 const MainMenuModal = (props) => {
   const { gameInProgress } = props;
 
-  const { setMainMenuOpen } = useContext(GameStateContext);
+  const { openMainMenu } = useContext(GameStateContext);
 
   if (gameInProgress) {
     return (
       <div style={divstyle}>
-        <Button onClick={() => setMainMenuOpen(true)}>Main Menu</Button>
+        <Button onClick={openMainMenu}>Main Menu</Button>
       </div>
     );
   }

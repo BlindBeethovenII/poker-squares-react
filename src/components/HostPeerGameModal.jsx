@@ -51,7 +51,7 @@ const HostPeerGameModal = (props) => {
   const [closed, setClosed] = useState(false);
   const [readyToPlay, setReadyToPlay] = useState(false);
 
-  const { setMainMenuOpen } = useContext(GameStateContext);
+  const { openMainMenu } = useContext(GameStateContext);
 
   useEffect(() => {
     if (hostPeerGameOpen) {
@@ -105,7 +105,7 @@ const HostPeerGameModal = (props) => {
 
   // TODO decide where to put this
   const localCloseHostPeerGame = () => {
-    setMainMenuOpen(true);
+    openMainMenu();
     closeHostPeerGame();
   };
 
