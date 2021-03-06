@@ -40,7 +40,7 @@ const Info = styled.p`
 `;
 
 const JoinPeerGameModal = (props) => {
-  const { joinPeerGameOpen, setDeck, playGame, closeJoinPeerGame } = props;
+  const { setDeck } = props;
 
   const [peer, setPeer] = useState(undefined);
   const [brokerId, setBrokerId] = useState('');
@@ -50,7 +50,7 @@ const JoinPeerGameModal = (props) => {
   const [closed, setClosed] = useState(false);
   const [readyToPlay, setReadyToPlay] = useState(false);
 
-  const { openMainMenu } = useContext(GameStateContext);
+  const { openMainMenu, joinPeerGameOpen, closeJoinPeerGame } = useContext(GameStateContext);
 
   useEffect(() => {
     if (joinPeerGameOpen) {
@@ -134,7 +134,7 @@ const JoinPeerGameModal = (props) => {
         {disconnected && <Info>Disconnected</Info>}
         {closed && <Info>Closed</Info>}
         {error && <Info>Error: {error.type}</Info>}
-        {readyToPlay && <Button onClick={playGame}>Play</Button>}
+        {readyToPlay && <Button onClick={closeJoinPeerGame}>Play</Button>}
         <Button onClick={localCloseJoinPeerGame}>Cancel</Button>
       </Modal>
     </div>
@@ -142,10 +142,7 @@ const JoinPeerGameModal = (props) => {
 };
 
 JoinPeerGameModal.propTypes = {
-  joinPeerGameOpen: PropTypes.bool.isRequired,
   setDeck: PropTypes.func.isRequired,
-  playGame: PropTypes.func.isRequired,
-  closeJoinPeerGame: PropTypes.func.isRequired,
 };
 
 export default JoinPeerGameModal;

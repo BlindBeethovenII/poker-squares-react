@@ -28,9 +28,9 @@ const Button = styled.button`
 `;
 
 const MainMenuModal = (props) => {
-  const { gameInProgress, startGame, hostPeerGame, joinPeerGame } = props;
+  const { gameInProgress, startGame } = props;
 
-  const { mainMenuOpen, closeMainMenu } = useContext(GameStateContext);
+  const { mainMenuOpen, closeMainMenu, openHostPeerGame, openJoinPeerGame } = useContext(GameStateContext);
 
   const closeIfGameInProgress = () => {
     // this way of closing is only possible if a game is in progress
@@ -47,12 +47,12 @@ const MainMenuModal = (props) => {
 
   const localHostPeerGame = () => {
     closeMainMenu();
-    hostPeerGame();
+    openHostPeerGame();
   };
 
   const localJoinPeerGame = () => {
     closeMainMenu();
-    joinPeerGame();
+    openJoinPeerGame();
   };
 
   return (
@@ -76,8 +76,6 @@ const MainMenuModal = (props) => {
 MainMenuModal.propTypes = {
   gameInProgress: PropTypes.bool.isRequired,
   startGame: PropTypes.func.isRequired,
-  hostPeerGame: PropTypes.func.isRequired,
-  joinPeerGame: PropTypes.func.isRequired,
 };
 
 export default MainMenuModal;

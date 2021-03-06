@@ -41,7 +41,7 @@ const Info = styled.p`
 `;
 
 const HostPeerGameModal = (props) => {
-  const { hostPeerGameOpen, setDeck, playGame, closeHostPeerGame } = props;
+  const { setDeck } = props;
 
   const [peer, setPeer] = useState(undefined);
   const [brokerId, setBrokerId] = useState('');
@@ -51,7 +51,7 @@ const HostPeerGameModal = (props) => {
   const [closed, setClosed] = useState(false);
   const [readyToPlay, setReadyToPlay] = useState(false);
 
-  const { openMainMenu } = useContext(GameStateContext);
+  const { openMainMenu, hostPeerGameOpen, closeHostPeerGame } = useContext(GameStateContext);
 
   useEffect(() => {
     if (hostPeerGameOpen) {
@@ -119,7 +119,7 @@ const HostPeerGameModal = (props) => {
         {disconnected && <Info>Disconnected</Info>}
         {closed && <Info>Closed</Info>}
         {error && <Info>Error: {error.type}</Info>}
-        {readyToPlay && <Button onClick={playGame}>Play</Button>}
+        {readyToPlay && <Button onClick={closeHostPeerGame}>Play</Button>}
         <Button onClick={localCloseHostPeerGame}>Cancel</Button>
       </Modal>
     </div>
@@ -127,10 +127,7 @@ const HostPeerGameModal = (props) => {
 };
 
 HostPeerGameModal.propTypes = {
-  hostPeerGameOpen: PropTypes.bool.isRequired,
   setDeck: PropTypes.func.isRequired,
-  playGame: PropTypes.func.isRequired,
-  closeHostPeerGame: PropTypes.func.isRequired,
 };
 
 export default HostPeerGameModal;
