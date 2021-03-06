@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { CARD_NONE } from '../shared/constants';
 import { cloneByJSON } from '../useful-js-functions';
-import { updateHandScores } from '../shared/card-functions';
+import { updateHandScores, col2Left, row2Top, createShuffledDeck } from '../shared/card-functions';
 
 const GameStateContext = React.createContext({});
 
@@ -58,7 +58,7 @@ export const GameStateContextProvider = ({ children }) => {
   };
 
   // place the given card at the stated column and row
-  const placeCard = (col, row, card) => {
+  const placeAndScoreCard = (col, row, card) => {
     const newPlacedCards = cloneByJSON(placedCards);
     newPlacedCards[col][row] = { suit: card.suit, number: card.number };
     const { scoresRows: newScoresRows, scoresCols: newScoresCols, scoreTotal: newScoreTotal } = updateHandScores(
@@ -74,6 +74,32 @@ export const GameStateContextProvider = ({ children }) => {
     setScoresRows(newScoresRows);
     setScoresCols(newScoresCols);
     setScoreTotal(newScoreTotal);
+  };
+
+  // the deck with its current card index
+  const [deck, setDeck] = useState([]);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+
+  // set the deck and go back to first card
+  const setDeckAndResetCurrentCardIndex = (newDeck) => {
+    setDeck(newDeck);
+    setCurrentCardIndex(0);
+  };
+
+  // reset the deck to a random shuffle
+  const resetDeck = () => {
+    setDeck(createShuffledDeck());
+    setCurrentCardIndex(0);
+  };
+
+  // move current card to given col,row, score it, and move current card to next card in the deck
+  const placeCurrentCard = (col, row) => {
+    placeAndScoreCard(col, row, deck[currentCardIndex]);
+    const newDeck = cloneByJSON(deck);
+    newDeck[currentCardIndex].left = col2Left(col);
+    newDeck[currentCardIndex].top = row2Top(row);
+    setDeck(newDeck);
+    setCurrentCardIndex(currentCardIndex + 1);
   };
 
   // expose our state and state functions via the context
@@ -99,7 +125,14 @@ export const GameStateContextProvider = ({ children }) => {
     scoresCols,
     scoreTotal,
     resetHand,
-    placeCard,
+
+    // the deck with its current card index
+    deck,
+    currentCardIndex,
+    gameInProgress: !!deck?.length,
+    setDeck: setDeckAndResetCurrentCardIndex,
+    resetDeck,
+    placeCurrentCard,
   };
 
   return <GameStateContext.Provider value={context}>{children}</GameStateContext.Provider>;

@@ -1,7 +1,5 @@
 import React, { useContext } from 'react';
 
-import PropTypes from 'prop-types';
-
 import styled from 'styled-components';
 
 import { col2Left, row2Top } from '../shared/card-functions';
@@ -28,10 +26,8 @@ const Button = styled.button`
   border-radius: 3px;
 `;
 
-const MainMenuModal = (props) => {
-  const { gameInProgress } = props;
-
-  const { openMainMenu } = useContext(GameStateContext);
+const MainMenuModal = () => {
+  const { openMainMenu, gameInProgress } = useContext(GameStateContext);
 
   if (gameInProgress) {
     return (
@@ -43,10 +39,6 @@ const MainMenuModal = (props) => {
 
   // don't show button as no game in progress
   return null;
-};
-
-MainMenuModal.propTypes = {
-  gameInProgress: PropTypes.bool.isRequired,
 };
 
 export default MainMenuModal;

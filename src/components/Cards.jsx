@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
-import PropTypes from 'prop-types';
+import GameStateContext from '../context/GameStateContext';
 
 import Card from './Card';
 
-const Cards = (props) => {
-  // redux provides the deck and the current card we are up to
-  // we include all cards in the deck, up to and including the currentCardIndex
-  const { deck, currentCardIndex } = props;
+const Cards = () => {
+  const { deck, currentCardIndex } = useContext(GameStateContext);
 
+  // we show all cards in the deck, up to and including the currentCardIndex
   return (
     <div>
       {deck.map((card, cardIndex) =>
@@ -18,11 +17,6 @@ const Cards = (props) => {
       )}
     </div>
   );
-};
-
-Cards.propTypes = {
-  deck: PropTypes.array.isRequired,
-  currentCardIndex: PropTypes.number.isRequired,
 };
 
 export default Cards;

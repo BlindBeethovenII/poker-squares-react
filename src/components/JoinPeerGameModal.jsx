@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-import PropTypes from 'prop-types';
-
 import { Modal } from 'react-responsive-modal';
 import styled from 'styled-components';
 import Peer from 'peerjs';
@@ -39,9 +37,7 @@ const Info = styled.p`
   text-align: center;
 `;
 
-const JoinPeerGameModal = (props) => {
-  const { setDeck } = props;
-
+const JoinPeerGameModal = () => {
   const [peer, setPeer] = useState(undefined);
   const [brokerId, setBrokerId] = useState('');
   const [error, setError] = useState(undefined);
@@ -50,7 +46,7 @@ const JoinPeerGameModal = (props) => {
   const [closed, setClosed] = useState(false);
   const [readyToPlay, setReadyToPlay] = useState(false);
 
-  const { openMainMenu, joinPeerGameOpen, closeJoinPeerGame } = useContext(GameStateContext);
+  const { openMainMenu, joinPeerGameOpen, closeJoinPeerGame, setDeck } = useContext(GameStateContext);
 
   useEffect(() => {
     if (joinPeerGameOpen) {
@@ -139,10 +135,6 @@ const JoinPeerGameModal = (props) => {
       </Modal>
     </div>
   );
-};
-
-JoinPeerGameModal.propTypes = {
-  setDeck: PropTypes.func.isRequired,
 };
 
 export default JoinPeerGameModal;

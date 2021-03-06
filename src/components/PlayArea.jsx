@@ -13,7 +13,7 @@ import BorderRightImage from '../images/borders/right.png';
 
 import { GRID_INDEXES } from '../shared/constants';
 
-import BlankSpace from './BlankSpaceConnector';
+import BlankSpace from './BlankSpace';
 
 const bordertopleft = {
   position: 'absolute',

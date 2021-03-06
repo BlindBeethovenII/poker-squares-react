@@ -34,16 +34,13 @@ const BlankSpace = (props) => {
   // compute the card blank space using absolute positioning based on grid (col, row) values
   const { col, row } = props;
 
-  const { dealtCard, dealNextCard } = props;
-
-  const { placeCard } = useContext(GameStateContext);
+  const { deck, placeCurrentCard } = useContext(GameStateContext);
 
   const [processedClick, setProcessedClick] = useState(false);
   const [useAnimation, setUseAnimation] = useState(false);
   const [showCardBase, setShowCardBase] = useState(true);
 
   // we need to know when a new deck has been dealt, so we can set our state - as we are only rendered once when the app is loaded, and then re-used
-  const { deck } = props;
   useEffect(() => {
     // a new deck, so set our state back for re-use
     setProcessedClick(false);
@@ -68,8 +65,7 @@ const BlankSpace = (props) => {
     // console.log(`onClick for ${col} ${row} called`);
     if (!processedClick) {
       setUseAnimation(true);
-      placeCard(col, row, dealtCard);
-      dealNextCard(col, row);
+      placeCurrentCard(col, row);
       setProcessedClick(true);
     }
   };
@@ -100,19 +96,6 @@ const BlankSpace = (props) => {
 BlankSpace.propTypes = {
   col: PropTypes.number.isRequired,
   row: PropTypes.number.isRequired,
-  deck: PropTypes.array.isRequired,
-  dealtCard: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    suit: PropTypes.string.isRequired,
-    number: PropTypes.number.isRequired,
-    left: PropTypes.number.isRequired,
-    top: PropTypes.number.isRequired,
-  }),
-  dealNextCard: PropTypes.func.isRequired,
-};
-
-BlankSpace.defaultProps = {
-  dealtCard: null,
 };
 
 export default BlankSpace;

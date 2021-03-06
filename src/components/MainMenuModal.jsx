@@ -1,7 +1,5 @@
 import React, { useContext } from 'react';
 
-import PropTypes from 'prop-types';
-
 import { Modal } from 'react-responsive-modal';
 import styled from 'styled-components';
 
@@ -27,10 +25,16 @@ const Button = styled.button`
   border-radius: 3px;
 `;
 
-const MainMenuModal = (props) => {
-  const { gameInProgress, startGame } = props;
-
-  const { mainMenuOpen, closeMainMenu, openHostPeerGame, openJoinPeerGame, resetHand } = useContext(GameStateContext);
+const MainMenuModal = () => {
+  const {
+    mainMenuOpen,
+    closeMainMenu,
+    openHostPeerGame,
+    openJoinPeerGame,
+    resetHand,
+    resetDeck,
+    gameInProgress,
+  } = useContext(GameStateContext);
 
   const closeIfGameInProgress = () => {
     // this way of closing is only possible if a game is in progress
@@ -43,7 +47,7 @@ const MainMenuModal = (props) => {
   const localStartGame = () => {
     closeMainMenu();
     resetHand();
-    startGame();
+    resetDeck();
   };
 
   const localHostPeerGame = () => {
@@ -72,11 +76,6 @@ const MainMenuModal = (props) => {
       </Modal>
     </div>
   );
-};
-
-MainMenuModal.propTypes = {
-  gameInProgress: PropTypes.bool.isRequired,
-  startGame: PropTypes.func.isRequired,
 };
 
 export default MainMenuModal;
