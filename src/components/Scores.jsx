@@ -1,13 +1,11 @@
-import React from 'react';
-
-import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 
 import Score from './Score';
 import { keyFromIndex } from '../shared/card-functions';
+import GameStateContext from '../context/GameStateContext';
 
-const Scores = (props) => {
-  // redux provides the hand values we are interested in
-  const { scoresRows, scoresCols, scoreTotal } = props;
+const Scores = () => {
+  const { scoresRows, scoresCols, scoreTotal } = useContext(GameStateContext);
 
   return (
     <div>
@@ -20,12 +18,6 @@ const Scores = (props) => {
       <Score key="totalscore" col={5} row={5} score={scoreTotal} isTotalScore />
     </div>
   );
-};
-
-Scores.propTypes = {
-  scoresRows: PropTypes.array.isRequired,
-  scoresCols: PropTypes.array.isRequired,
-  scoreTotal: PropTypes.number.isRequired,
 };
 
 export default Scores;

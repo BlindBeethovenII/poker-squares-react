@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -7,6 +7,7 @@ import styled, { keyframes, css } from 'styled-components';
 import CardBaseImage from '../images/cards/cardbase.png';
 
 import { col2Left, row2Top } from '../shared/card-functions';
+import GameStateContext from '../context/GameStateContext';
 
 // The pulse
 const pulse = keyframes`
@@ -33,8 +34,9 @@ const BlankSpace = (props) => {
   // compute the card blank space using absolute positioning based on grid (col, row) values
   const { col, row } = props;
 
-  // redux provides the placeCard action, which needs the top card in the deal, and also provides the deal next card function
-  const { placeCard, dealtCard, dealNextCard } = props;
+  const { dealtCard, dealNextCard } = props;
+
+  const { placeCard } = useContext(GameStateContext);
 
   const [processedClick, setProcessedClick] = useState(false);
   const [useAnimation, setUseAnimation] = useState(false);
@@ -106,7 +108,6 @@ BlankSpace.propTypes = {
     left: PropTypes.number.isRequired,
     top: PropTypes.number.isRequired,
   }),
-  placeCard: PropTypes.func.isRequired,
   dealNextCard: PropTypes.func.isRequired,
 };
 
