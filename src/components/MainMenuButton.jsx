@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { col2Left, row2Top } from '../shared/card-functions';
-import UIStateContext from '../context/UIStateContext';
+import GameStateContext from '../context/GameStateContext';
 
 const left = col2Left(2) + 47;
 const top = row2Top(6) + 10;
@@ -31,7 +31,7 @@ const Button = styled.button`
 const MainMenuModal = (props) => {
   const { gameInProgress } = props;
 
-  const { setMainMenuOpen } = useContext(UIStateContext);
+  const { setMainMenuOpen } = useContext(GameStateContext);
 
   if (gameInProgress) {
     return (

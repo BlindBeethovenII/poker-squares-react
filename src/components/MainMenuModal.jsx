@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { Modal } from 'react-responsive-modal';
 import styled from 'styled-components';
 
-import UIStateContext from '../context/UIStateContext';
+import GameStateContext from '../context/GameStateContext';
 
 const Title = styled.h2`
   background: white;
@@ -30,7 +30,7 @@ const Button = styled.button`
 const MainMenuModal = (props) => {
   const { gameInProgress, startGame, hostPeerGame, joinPeerGame } = props;
 
-  const { mainMenuOpen, setMainMenuOpen } = useContext(UIStateContext);
+  const { mainMenuOpen, setMainMenuOpen } = useContext(GameStateContext);
 
   const closeIfGameInProgress = () => {
     // this way of closing is only possible if a game is in progress

@@ -8,7 +8,7 @@ import Peer from 'peerjs';
 
 import { createShuffledDeck } from '../shared/card-functions';
 import { createDeckMessage } from '../shared/peer-messages';
-import UIStateContext from '../context/UIStateContext';
+import GameStateContext from '../context/GameStateContext';
 
 const Button = styled.button`
   background: #761d38;
@@ -51,7 +51,7 @@ const HostPeerGameModal = (props) => {
   const [closed, setClosed] = useState(false);
   const [readyToPlay, setReadyToPlay] = useState(false);
 
-  const { setMainMenuOpen } = useContext(UIStateContext);
+  const { setMainMenuOpen } = useContext(GameStateContext);
 
   useEffect(() => {
     if (hostPeerGameOpen) {
