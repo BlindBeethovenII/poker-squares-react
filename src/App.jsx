@@ -10,17 +10,20 @@ import HostPeerGameModal from './components/HostPeerGameModal';
 import JoinPeerGameModal from './components/JoinPeerGameModal';
 
 import { GameStateContextProvider } from './context/GameStateContext';
+import { ConnectionContextProvider } from './context/ConnectionContext';
 
 const App = () => (
   <GameStateContextProvider>
-    <PlayArea />
-    <Cards />
-    <Scores />
-    <GitInfo />
-    <MainMenuButton />
-    <MainMenuModal />
-    <HostPeerGameModal />
-    <JoinPeerGameModal />
+    <ConnectionContextProvider>
+      <PlayArea />
+      <Cards />
+      <Scores />
+      <GitInfo />
+      <MainMenuButton />
+      <MainMenuModal />
+      <HostPeerGameModal />
+      <JoinPeerGameModal />
+    </ConnectionContextProvider>
   </GameStateContextProvider>
 );
 

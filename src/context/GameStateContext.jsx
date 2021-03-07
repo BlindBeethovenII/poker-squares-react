@@ -80,10 +80,11 @@ export const GameStateContextProvider = ({ children }) => {
   const [deck, setDeck] = useState([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
-  // set the deck and go back to first card
+  // set the deck and go back to first card, and reset the hand/scores
   const setDeckAndResetCurrentCardIndex = (newDeck) => {
     setDeck(newDeck);
     setCurrentCardIndex(0);
+    resetHand();
   };
 
   // reset the deck to a random shuffle

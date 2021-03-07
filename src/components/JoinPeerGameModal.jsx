@@ -2,10 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import { Modal } from 'react-responsive-modal';
 import styled from 'styled-components';
-import Peer from 'peerjs';
+
+import GameStateContext from '../context/GameStateContext';
+import ConnectionContext from '../context/ConnectionContext';
 
 import { isDeckMessage, getDeckFromMessage } from '../shared/peer-messages';
-import GameStateContext from '../context/GameStateContext';
 
 const Button = styled.button`
   background: #761d38;
@@ -38,100 +39,54 @@ const Info = styled.p`
 `;
 
 const JoinPeerGameModal = () => {
-  const [peer, setPeer] = useState(undefined);
-  const [brokerId, setBrokerId] = useState('');
-  const [error, setError] = useState(undefined);
-  const [connectedTo, setConnectedTo] = useState('');
-  const [disconnected, setDisconnected] = useState(false);
-  const [closed, setClosed] = useState(false);
   const [readyToPlay, setReadyToPlay] = useState(false);
+  const [unexpectedData, setUnexpectedData] = useState('');
 
   const { openMainMenu, joinPeerGameOpen, closeJoinPeerGame, setDeck } = useContext(GameStateContext);
+  const { brokerId, error, connectedTo, disconnected, closed, resetConnection, joinGame } = useContext(
+    ConnectionContext,
+  );
 
   useEffect(() => {
     if (joinPeerGameOpen) {
-      // dialog is opening - perhaps for the second time - manage the state variables and the connection
-      if (peer) {
-        peer.destroy();
-      }
-      setBrokerId('');
-      setError(undefined);
-      setConnectedTo('');
-      setDisconnected(false);
-      setClosed(false);
+      // dialog is opening - perhaps for the second time - reset everything ready for a join a new game
+      resetConnection();
       setReadyToPlay(false);
+      setUnexpectedData('');
     }
   }, [joinPeerGameOpen]);
 
-  const join = () => {
-    const localPeer = new Peer();
-
-    // remember the peer, so we can reset when the dialog is re-entered
-    setPeer(localPeer);
-
-    localPeer.on('open', () => {
-      if (brokerId !== localPeer.id) {
-        setBrokerId(localPeer.id);
-      }
-
-      const conn = localPeer.connect('poker-squares-react');
-
-      conn.on('open', () => {
-        setConnectedTo(conn.peer);
-      });
-
-      conn.on('data', (data) => {
-        if (isDeckMessage(data)) {
-          setDeck(getDeckFromMessage(data));
-          setReadyToPlay(true);
-        } else {
-          setError(`Unexpected message from host: ${data.type}`);
-        }
-      });
-
-      conn.on('close', () => {
-        setClosed(true);
-      });
-
-      conn.on('error', (err) => setError(err));
-    });
-
-    localPeer.on('error', (err) => setError(err));
-
-    localPeer.on('connection', (conn) => {
-      // Disallow incoming connections
-      conn.on('open', () => {
-        conn.close();
-      });
-    });
-
-    localPeer.on('disconnected', () => {
-      setDisconnected(true);
-    });
-
-    localPeer.on('close', () => {
-      setClosed(true);
-    });
+  const processData = (data) => {
+    if (isDeckMessage(data)) {
+      setDeck(getDeckFromMessage(data));
+      setReadyToPlay(true);
+    } else {
+      setUnexpectedData(data.type);
+    }
   };
 
-  // TODO decide where to put this
-  const localCloseJoinPeerGame = () => {
-    openMainMenu();
+  const joinNewGame = () => {
+    joinGame(processData);
+  };
+
+  const closeJoinPeerGameDialog = () => {
     closeJoinPeerGame();
+    openMainMenu();
   };
 
   return (
     <div>
-      <Modal open={joinPeerGameOpen} onClose={localCloseJoinPeerGame} center>
+      <Modal open={joinPeerGameOpen} onClose={closeJoinPeerGameDialog} center>
         <Title>Join Peer Game</Title>
-        <Button onClick={join}>Join</Button>
+        <Button onClick={joinNewGame}>Join</Button>
         {brokerId && <Info>Broker Id: {brokerId}</Info>}
         {connectedTo && <Info>Connected To: {connectedTo}</Info>}
         {disconnected && <Info>Disconnected</Info>}
         {closed && <Info>Closed</Info>}
         {error && <Info>Error: {error.type}</Info>}
+        {unexpectedData && <Info>Unexpected Data From Host: {unexpectedData}</Info>}
         {readyToPlay && <Button onClick={closeJoinPeerGame}>Play</Button>}
-        <Button onClick={localCloseJoinPeerGame}>Cancel</Button>
+        <Button onClick={closeJoinPeerGameDialog}>Cancel</Button>
       </Modal>
     </div>
   );
