@@ -32,7 +32,7 @@ const PulseDiv = styled.div`
 
 const BlankSpace = (props) => {
   // compute the card blank space using absolute positioning based on grid (col, row) values
-  const { col, row } = props;
+  const { col, row, clickable } = props;
 
   const { deck, placeCurrentCard } = useContext(GameStateContext);
 
@@ -61,9 +61,10 @@ const BlankSpace = (props) => {
   };
 
   // the onClick/onKeyDown function to place a card here, and then deal the next card - but only if we've not done that already
+  // can only do this if it is a blank space in the player's area, not the opponents/computer's area
   const placeThenDeal = () => {
     // console.log(`onClick for ${col} ${row} called`);
-    if (!processedClick) {
+    if (!processedClick && clickable) {
       setUseAnimation(true);
       placeCurrentCard(col, row);
       setProcessedClick(true);
@@ -96,6 +97,7 @@ const BlankSpace = (props) => {
 BlankSpace.propTypes = {
   col: PropTypes.number.isRequired,
   row: PropTypes.number.isRequired,
+  clickable: PropTypes.bool.isRequired,
 };
 
 export default BlankSpace;

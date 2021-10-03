@@ -113,10 +113,12 @@ const PlayArea = () => (
     <img src={BorderBottomRightImage} alt="borderbottomright" style={borderbottomright} />
     <img src={BorderRightImage} alt="borderright" style={borderright} />
     {GRID_INDEXES.map((col) =>
-      GRID_INDEXES.map((row) => <BlankSpace key={`blankspace_${col}_${row}`} col={col} row={row} />),
+      GRID_INDEXES.map((row) => <BlankSpace key={`blankspace_${col}_${row}`} col={col} row={row} clickable />),
     )}
     {GRID_INDEXES.map((col) =>
-      GRID_INDEXES.map((row) => <BlankSpace key={`blankspace_${col + 8}_${row}`} col={col + 8} row={row} />),
+      GRID_INDEXES.map((row) => (
+        <BlankSpace key={`blankspace_${col + 8}_${row}`} col={col + 8} row={row} clickable={false} />
+      )),
     )}
   </div>
 );
