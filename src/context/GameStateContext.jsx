@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { CARD_NONE } from '../shared/constants';
+import { CARD_NONE, SUIT_NONE } from '../shared/constants';
 import { cloneByJSON } from '../useful-js-functions';
 import { updateHandScores, col2Left, row2Top, createShuffledDeck } from '../shared/card-functions';
 
@@ -66,7 +66,7 @@ export const GameStateContextProvider = ({ children }) => {
   };
 
   // place the given card at the stated column and row
-  const placeAndScoreCard = (col, row, card) => {
+  const placeAndScoreCard = (col, row, opponentCol, oppponentRow, card) => {
     const newPlacedCards = cloneByJSON(placedCards);
     newPlacedCards[col][row] = { suit: card.suit, number: card.number };
     const { scoresRows: newScoresRows, scoresCols: newScoresCols, scoreTotal: newScoreTotal } = updateHandScores(
@@ -83,14 +83,14 @@ export const GameStateContextProvider = ({ children }) => {
     setScoresCols(newScoresCols);
     setScoreTotal(newScoreTotal);
 
-    // TODO - need to get the opponent to play a good move here - for now just put the card in the same slot
+    // place the opponent's card in the stated col/row
     const newOpponentPlacedCards = cloneByJSON(opponentPlacedCards);
-    newOpponentPlacedCards[col][row] = { suit: card.suit, number: card.number };
+    newOpponentPlacedCards[opponentCol][oppponentRow] = { suit: card.suit, number: card.number };
     const {
       scoresRows: newOpponentScoresRows,
       scoresCols: newOpponentScoresCols,
       scoreTotal: newOpponentScoreTotal,
-    } = updateHandScores(col, row, scoresCols, scoresRows, newPlacedCards);
+    } = updateHandScores(opponentCol, oppponentRow, opponentScoresCols, opponentScoresRows, newOpponentPlacedCards);
 
     // remember the updated Opponent hand
     setOpponentPlacedCards(newOpponentPlacedCards);
@@ -121,9 +121,24 @@ export const GameStateContextProvider = ({ children }) => {
   };
 
   // move current card to given col,row, score it, and move current card to next card in the deck
+  // and play the opponent's card as well
   const placeCurrentCard = (col, row) => {
     const currentCard = deck[currentCardIndex];
-    placeAndScoreCard(col, row, currentCard);
+
+    // decide where the oppponent card is going
+    // TODO - for now just any free space we find in this algorithm
+    let opponentCol = 0;
+    let oppponentRow = 0;
+    for (let colIndex = 0; colIndex < 5; colIndex += 1) {
+      for (let rowIndex = 0; rowIndex < 5; rowIndex += 1) {
+        if (opponentPlacedCards[colIndex][rowIndex].suit === SUIT_NONE) {
+          opponentCol = colIndex;
+          oppponentRow = rowIndex;
+        }
+      }
+    }
+
+    placeAndScoreCard(col, row, opponentCol, oppponentRow, currentCard);
 
     // update the deck
     const newDeck = cloneByJSON(deck);
@@ -136,8 +151,8 @@ export const GameStateContextProvider = ({ children }) => {
     const newOpponentDeck = cloneByJSON(opponentDeck);
     const opponentCurrentCard = cloneByJSON(currentCard);
     newOpponentDeck[currentCardIndex] = opponentCurrentCard;
-    newOpponentDeck[currentCardIndex].left = col2Left(col + 8);
-    newOpponentDeck[currentCardIndex].top = row2Top(row);
+    newOpponentDeck[currentCardIndex].left = col2Left(opponentCol + 8);
+    newOpponentDeck[currentCardIndex].top = row2Top(oppponentRow);
     setOpponentDeck(newOpponentDeck);
 
     // onto the next card
