@@ -147,7 +147,7 @@ export const GameStateContextProvider = ({ children }) => {
     setDeck(newDeck);
 
     // and the same for the opponent - remember the opponent deck is just the placed cards
-    // TODO - for now placed in same col/row - just need to know the left is in a different place
+    // TODO: for now placed in same col/row - just need to know the left is in a different place
     const newOpponentDeck = cloneByJSON(opponentDeck);
     const opponentCurrentCard = cloneByJSON(currentCard);
     newOpponentDeck[currentCardIndex] = opponentCurrentCard;
