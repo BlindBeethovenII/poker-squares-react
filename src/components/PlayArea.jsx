@@ -25,7 +25,7 @@ const bordertop = {
   position: 'absolute',
   top: '4px',
   left: '14px',
-  width: '490px',
+  width: '894px',
   height: '10px',
 };
 
@@ -47,26 +47,26 @@ const borderbottom = {
   position: 'absolute',
   top: '616px',
   left: '14px',
-  width: '490px',
+  width: '894px',
   height: '10px',
 };
 
 const bordertopright = {
   position: 'absolute',
   top: '4px',
-  left: '504px',
+  left: '908px',
 };
 
 const borderbottomright = {
   position: 'absolute',
   top: '616px',
-  left: '504px',
+  left: '908px',
 };
 
 const borderright = {
   position: 'absolute',
   top: '14px',
-  left: '504px',
+  left: '908px',
   width: '10px',
   height: '602px',
 };
@@ -75,12 +75,12 @@ const playbackgroundsvg = {
   position: 'absolute',
   top: '4px',
   left: '8px',
-  width: '536px',
+  width: '940px',
   height: '622px',
 };
 
 const playbackgroundrect = {
-  width: '506px',
+  width: '910px',
   height: '622px',
   fill: 'rgb(85,107,47)',
 };
@@ -91,12 +91,19 @@ const playarea = {
   left: '0px',
 };
 
+const playarea2 = {
+  position: 'absolute',
+  top: '0px',
+  left: '544px',
+};
+
 const PlayArea = () => (
   <div>
     <svg style={playbackgroundsvg}>
       <rect style={playbackgroundrect} />
     </svg>
     <img src={PlayAreaImage} alt="playarea" style={playarea} />
+    <img src={PlayAreaImage} alt="playarea2" style={playarea2} />
     <img src={BorderTopLeftImage} alt="bordertopleft" style={bordertopleft} />
     <img src={BorderTopImage} alt="bordertop" style={bordertop} />
     <img src={BorderLeftImage} alt="borderleft" style={borderleft} />
@@ -107,6 +114,9 @@ const PlayArea = () => (
     <img src={BorderRightImage} alt="borderright" style={borderright} />
     {GRID_INDEXES.map((col) =>
       GRID_INDEXES.map((row) => <BlankSpace key={`blankspace_${col}_${row}`} col={col} row={row} />),
+    )}
+    {GRID_INDEXES.map((col) =>
+      GRID_INDEXES.map((row) => <BlankSpace key={`blankspace_${col + 8}_${row}`} col={col + 8} row={row} />),
     )}
   </div>
 );

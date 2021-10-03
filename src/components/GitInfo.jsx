@@ -5,7 +5,7 @@ import { col2Left, row2Top } from '../shared/card-functions';
 
 import gitLog from '../_generated_git_log';
 
-const left = col2Left(6) + 27;
+const left = col2Left(12) + 27;
 const top = row2Top(6) + 44;
 
 const builtstyle = {
