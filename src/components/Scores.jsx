@@ -12,19 +12,25 @@ const Scores = () => {
   return (
     <div>
       {scoresRows.map((score, row) => (
-        <Score key={keyFromIndex('rowscore', row)} col={5} row={row} score={score} isTotalScore={false} />
+        <Score key={keyFromIndex('rowscore', row, 'human')} col={5} row={row} score={score} isTotalScore={false} />
       ))}
       {scoresCols.map((score, col) => (
-        <Score key={keyFromIndex('colscore', col)} col={col} row={5} score={score} isTotalScore={false} />
+        <Score key={keyFromIndex('colscore', col, 'human')} col={col} row={5} score={score} isTotalScore={false} />
       ))}
-      <Score key="totalscore" col={5} row={5} score={scoreTotal} isTotalScore />
+      <Score key="totalscore_human" col={5} row={5} score={scoreTotal} isTotalScore />
       {opponentScoresRows.map((score, row) => (
-        <Score key={keyFromIndex('rowscore', row)} col={7} row={row} score={score} isTotalScore={false} />
+        <Score key={keyFromIndex('rowscore', row, 'opponent')} col={7} row={row} score={score} isTotalScore={false} />
       ))}
       {opponentScoresCols.map((score, col) => (
-        <Score key={keyFromIndex('colscore', col)} col={col + 8} row={5} score={score} isTotalScore={false} />
+        <Score
+          key={keyFromIndex('colscore', col, 'opponent')}
+          col={col + 8}
+          row={5}
+          score={score}
+          isTotalScore={false}
+        />
       ))}
-      <Score key="totalscore" col={7} row={5} score={opponentScoreTotal} isTotalScore />
+      <Score key="totalscore_opponent" col={7} row={5} score={opponentScoreTotal} isTotalScore />
     </div>
   );
 };

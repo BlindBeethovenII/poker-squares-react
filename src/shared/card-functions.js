@@ -327,7 +327,7 @@ export const cardSuitToFillColour = (suit) => {
 };
 
 // Simple hack to avoid the "Do not use Array index in keys" eslint error
-export const keyFromIndex = (id, index) => `${id}_${index}`;
+export const keyFromIndex = (id, index, player) => `${id}_${index}_${player}`;
 
 // helper function to create a suffled deck
 export const createShuffledDeck = () => {

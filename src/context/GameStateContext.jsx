@@ -164,6 +164,9 @@ export const GameStateContextProvider = ({ children }) => {
     setCurrentCardIndex(currentCardIndex + 1);
   };
 
+  // the opponent level
+  const [opponentLevel, setOpponentLevel] = useState(1);
+
   // expose our state and state functions via the context
   const context = {
     // the main menu open
@@ -207,6 +210,10 @@ export const GameStateContextProvider = ({ children }) => {
     setDeck: setDeckAndResetCurrentCardIndex,
     resetDeck,
     placeCurrentCard,
+
+    // the opponent level
+    opponentLevel,
+    setOpponentLevel,
   };
 
   return <GameStateContext.Provider value={context}>{children}</GameStateContext.Provider>;
