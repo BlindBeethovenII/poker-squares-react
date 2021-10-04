@@ -6,6 +6,7 @@ import Scores from './components/Scores';
 import GitInfo from './components/GitInfo';
 import MainMenuButton from './components/MainMenuButton';
 import MainMenuModal from './components/MainMenuModal';
+import SelectOpponentLevelModal from './components/SelectOpponentLevelModal';
 import HostPeerGameModal from './components/HostPeerGameModal';
 import JoinPeerGameModal from './components/JoinPeerGameModal';
 
@@ -21,6 +22,7 @@ const App = () => (
       <GitInfo />
       <MainMenuButton />
       <MainMenuModal />
+      <SelectOpponentLevelModal />
       <HostPeerGameModal />
       <JoinPeerGameModal />
     </ConnectionContextProvider>

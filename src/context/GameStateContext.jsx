@@ -27,6 +27,11 @@ export const GameStateContextProvider = ({ children }) => {
   const openMainMenu = () => setMainMenuOpen(true);
   const closeMainMenu = () => setMainMenuOpen(false);
 
+  // the select opponent level menu open state bool and functions
+  const [selectOpponentLevelOpen, setSelectOpponentLevelOpen] = useState(true);
+  const openSelectOpponentLevel = () => setSelectOpponentLevelOpen(true);
+  const closeSelectOpponentLevel = () => setSelectOpponentLevelOpen(false);
+
   // the host peer game open state bool and functions
   const [hostPeerGameOpen, setHostPeerGameOpen] = useState(false);
   const openHostPeerGame = () => setHostPeerGameOpen(true);
@@ -165,6 +170,11 @@ export const GameStateContextProvider = ({ children }) => {
     mainMenuOpen,
     openMainMenu,
     closeMainMenu,
+
+    // the select opponent level menu open
+    selectOpponentLevelOpen,
+    openSelectOpponentLevel,
+    closeSelectOpponentLevel,
 
     // the host peer game open
     hostPeerGameOpen,

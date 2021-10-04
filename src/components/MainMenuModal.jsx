@@ -29,10 +29,9 @@ const MainMenuModal = () => {
   const {
     mainMenuOpen,
     closeMainMenu,
+    openSelectOpponentLevel,
     openHostPeerGame,
     openJoinPeerGame,
-    resetHand,
-    resetDeck,
     gameInProgress,
   } = useContext(GameStateContext);
 
@@ -44,10 +43,9 @@ const MainMenuModal = () => {
   };
 
   // TODO decide where to put this when all are context
-  const localStartGame = () => {
+  const openSelectOpponentLevelModal = () => {
     closeMainMenu();
-    resetHand();
-    resetDeck();
+    openSelectOpponentLevel();
   };
 
   const localHostPeerGame = () => {
@@ -69,7 +67,7 @@ const MainMenuModal = () => {
         closeOnEsc={gameInProgress}
         showCloseIcon={gameInProgress}>
         <Title>Main Menu</Title>
-        <Button onClick={localStartGame}>Start New Solo Game</Button>
+        <Button onClick={openSelectOpponentLevelModal}>Start New Solo Game</Button>
         <Button onClick={localHostPeerGame}>Host Peer Game</Button>
         <Button onClick={localJoinPeerGame}>Join Peer Game</Button>
         {gameInProgress && <Button onClick={closeIfGameInProgress}>Resume Game</Button>}
