@@ -1,6 +1,13 @@
 // the card placement algorithms that the A.I. opponent uses
 
-import { SUIT_NONE, NUMBER_NONE, COL_NONE, ROW_NONE, ALGORITHM_FULL_HOUSES_THEN_FLUSHES } from './constants';
+import {
+  SUIT_NONE,
+  NUMBER_NONE,
+  COL_NONE,
+  ROW_NONE,
+  ALGORITHM_FULL_HOUSES_THEN_FLUSHES,
+  ALGORITHM_LAST_ROW_VERTICAL_THEN_FLUSHES_THEN_VERTICAL_NUMBERS,
+} from './constants';
 
 // supporting functions for card placement
 
@@ -117,6 +124,19 @@ const rowWithLeastCards = (placedCards) => {
   return result;
 };
 
+// return true if this row only has cards of the named suite or empty spaces
+const isRowOfSuit = (row, suit, placedCards) => {
+  for (let col = 0; col < 5; col += 1) {
+    const card = placedCards[col][row];
+
+    if (!isCardNone(card) && card.suit !== suit) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
 // return true if this col only has cards of the named suite or empty spaces
 const isColOfSuit = (col, suit, placedCards) => {
   for (let row = 0; row < 5; row += 1) {
@@ -136,6 +156,19 @@ const colHasNumber = (col, n, placedCards) => {
     const card = placedCards[col][row];
 
     if (!isCardNone(card) && card.number === n) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+// return true if the given column has a card of the given suit
+const colHasSuit = (col, suit, placedCards) => {
+  for (let row = 0; row < 5; row += 1) {
+    const card = placedCards[col][row];
+
+    if (!isCardNone(card) && card.suit === suit) {
       return true;
     }
   }
@@ -184,21 +217,80 @@ const colWithLeastCards = (row, placedCards) => {
   return resultCol;
 };
 
-// TODO
-export const placeCardByAlgorithm0 = (card, placedCards) => {
-  // TODO - for now just any free space we find in this algorithm
-  let col = 0;
-  let row = 0;
-  for (let colIndex = 0; colIndex < 5; colIndex += 1) {
-    for (let rowIndex = 0; rowIndex < 5; rowIndex += 1) {
-      if (placedCards[colIndex][rowIndex].suit === SUIT_NONE) {
-        col = colIndex;
-        row = rowIndex;
+// algorithm 0 covers FlushesAndVerticalNumbers and LastRowVerticalThenFlushesThenVerticalNumbers
+export const placeCardByAlgorithm0 = (card, placedCards, algorithm) => {
+  // start with no selection
+  let coord = { col: COL_NONE, row: ROW_NONE };
+
+  if (algorithm === ALGORITHM_LAST_ROW_VERTICAL_THEN_FLUSHES_THEN_VERTICAL_NUMBERS) {
+    // look for the column that has this number in, and if it already has an entry of this suite and the last entry is free, put this card in the last entry
+    for (let col = 0; col < 5; col += 1) {
+      if (colHasNumber(col, card.number, placedCards)) {
+        if (colHasSuit(col, card.suit, placedCards)) {
+          if (isCardNone(placedCards[col][4])) {
+            coord = { col, row: 4 };
+            break;
+          }
+        }
       }
     }
   }
 
-  return { col, row };
+  // find a row that is of this suit and has an empty space in it
+  if (coord.row === ROW_NONE) {
+    for (let row = 0; row < 5; row += 1) {
+      if (rowHasEmptySpace(row, placedCards)) {
+        if (isRowOfSuit(row, card.suit, placedCards)) {
+          // found the row
+          coord.row = row;
+          break;
+        }
+      }
+    }
+  }
+
+  // if we did not find such a row, just find the last row with a space in it
+  if (coord.row === ROW_NONE) {
+    for (let row = 4; row >= 0; row -= 1) {
+      if (rowHasEmptySpace(row, placedCards)) {
+        // found the row
+        coord.row = row;
+        break;
+      }
+    }
+  }
+
+  // we should have found a row by now
+  if (coord.row === ROW_NONE) {
+    throw new Error('Could not find row in placeCardByAlgorithm0');
+  }
+
+  // this algorithm tries to align numbers virtically
+  // look for a space that has this number
+  if (coord.col === COL_NONE) {
+    for (let col = 0; col < 5; col += 1) {
+      if (isCardNone(placedCards[col][coord.row])) {
+        if (colHasNumber(col, card.number, placedCards)) {
+          // found the column
+          coord.col = col;
+          break;
+        }
+      }
+    }
+  }
+
+  // if not found a matching column for this number, place in column with zero or one other card, else in column with least number of cards in already (that is a space)
+  if (coord.col === COL_NONE) {
+    coord.col = colWithLeastCards(coord.row, placedCards);
+  }
+
+  // we should have found a column by now
+  if (coord.col === COL_NONE) {
+    throw new Error('Could not find column in placeCardByAlgorithm0');
+  }
+
+  // we now know where to place the card
+  return coord;
 };
 
 // algorithm 1 covers FullHousesThenPairs and FullHousesThenFlushes
