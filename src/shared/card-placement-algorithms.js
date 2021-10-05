@@ -9,6 +9,8 @@ import {
   ALGORITHM_LAST_ROW_VERTICAL_THEN_FLUSHES_THEN_VERTICAL_NUMBERS,
 } from './constants';
 
+import { sortHand } from './card-functions';
+
 // supporting functions for card placement
 
 // NOTE: we cannot do "card === CARD_NONE" as we use cloneByJSON() for the placedCards which will create a new object
@@ -83,6 +85,122 @@ const rowCannotBeFullHouse = (row, placedCards) => {
   }
 
   return false;
+};
+
+// return true if this row can still be a straight with card added
+// note this is only called where the named row has at least one empty space
+const rowCouldBeStraightWithCard = (row, card, placedCards) => {
+  // easiest if we first sort the row
+
+  // create a hand for this row
+  const hand = [
+    placedCards[0][row],
+    placedCards[1][row],
+    placedCards[2][row],
+    placedCards[3][row],
+    placedCards[4][row],
+  ];
+
+  // now sort it
+  sortHand(hand);
+
+  // put the card in and sort (last space must be null - see above note)
+  hand[4] = card;
+  sortHand(hand);
+
+  // if repeated number, then it can't be a straight
+  for (let col = 0; col < 4; col += 1) {
+    if (!isCardNone(hand[col]) && !isCardNone(hand[col + 1])) {
+      if (hand[col].number === hand[col + 1].number) {
+        return false;
+      }
+    }
+  }
+
+  // the first to last can be at most 4 difference in number
+  // we know there is at least 1 card in the hand at this point
+  const lowest = hand[0].number;
+  let highest = -1;
+  for (let col = 4; col >= 0; col -= 1) {
+    if (!isCardNone(hand[col])) {
+      highest = hand[col].number;
+      break;
+    }
+  }
+
+  if (highest - lowest <= 4) {
+    return true;
+  }
+
+  // also need to cope with A 10 J Q K
+  // if current cards are just 10 J Q K or part of them then the above has already returned true, so A must be in as the lowest
+  // and for it to be possible for a straight, the 2nd card must be a 10 or higher (as there are no repeated cards at this point)
+  // there must be at least a second card otherwise above would have return true by now, so remaining cards must be 10 J Q K or missing
+  if (lowest === 1 && hand[1].number >= 10) {
+    // okay, can be straight
+    return true;
+  }
+
+  // nope, cannot be a straight
+  return false;
+};
+
+// return true if this row cannot be a straight
+const rowCannotBeStraight = (row, placedCards) => {
+  // easiest if we first sort the row
+
+  // create a hand for this row
+  const hand = [
+    placedCards[0][row],
+    placedCards[1][row],
+    placedCards[2][row],
+    placedCards[3][row],
+    placedCards[4][row],
+  ];
+
+  // now sort it
+  sortHand(hand);
+
+  // if no cards, then it can still be a straight
+  if (isCardNone(hand[0])) {
+    return false;
+  }
+
+  // if repeated number, then it can't be a straight
+  for (let col = 0; col < 4; col += 1) {
+    if (!isCardNone(hand[col]) && !isCardNone(hand[col + 1])) {
+      if (hand[col].number === hand[col + 1].number) {
+        return true;
+      }
+    }
+  }
+
+  // the first to last can be at most 4 difference in number for it to be a straight
+  // we know there is at least 1 card in the hand at this point
+  const lowest = hand[0].number;
+  let highest = -1;
+  for (let col = 4; col >= 0; col -= 1) {
+    if (!isCardNone(hand[col])) {
+      highest = hand[col].number;
+      break;
+    }
+  }
+
+  if (highest - lowest <= 4) {
+    // can be a straight
+    return false;
+  }
+
+  // also need to cope with A 10 J Q K
+  // if current cards are just 10 J Q K or part of them then the above has already returned true, so A must be in as the lowest
+  // and for it to be possible for a straight, the 2nd card must be a 10 or higher (as there are no repeated cards at this point)
+  // there must be at least a second card otherwise above would have return true by now, so remaining cards must be 10 J Q K or missing
+  if (lowest === 1 && hand[1].number >= 10) {
+    // okay, can be straight
+    return false;
+  }
+
+  return true;
 };
 
 // return the number of cards in the given row
@@ -373,18 +491,70 @@ export const placeCardByAlgorithm1 = (card, placedCards, algorithm) => {
   return coord;
 };
 
+// algorithm 2 covers StraightsThenPairs
 export const placeCardByAlgorithm2 = (card, placedCards) => {
-  // TODO - for now just any free space we find in this algorithm
-  let col = 0;
-  let row = 0;
-  for (let colIndex = 0; colIndex < 5; colIndex += 1) {
-    for (let rowIndex = 0; rowIndex < 5; rowIndex += 1) {
-      if (placedCards[colIndex][rowIndex].suit === SUIT_NONE) {
-        col = colIndex;
-        row = rowIndex;
+  // start with no selection
+  const coord = { col: COL_NONE, row: ROW_NONE };
+
+  // try and find a row where adding this number keeps it as a straight
+  for (let row = 0; row < 5; row += 1) {
+    if (rowHasEmptySpace(row, placedCards)) {
+      if (rowCouldBeStraightWithCard(row, card, placedCards)) {
+        // found the row
+        coord.row = row;
+        break;
       }
     }
   }
 
-  return { col, row };
+  // if we did not find such a row, then go for the row that is already unable to make a straight, that still has an empty space, starting from the bottom
+  if (coord.row === ROW_NONE) {
+    for (let row = 4; row >= 0; row -= 1) {
+      if (rowHasEmptySpace(row, placedCards)) {
+        if (rowCannotBeStraight(row, placedCards)) {
+          // use this row
+          coord.row = row;
+          break;
+        }
+      }
+    }
+  }
+
+  // if we did not find such a row, then go for the row with the most spaces in, as it is less likely to be about to complete a straight
+  if (coord.row === ROW_NONE) {
+    coord.row = rowWithLeastCards(placedCards);
+  }
+
+  // we should have found a row by now
+  if (coord.row === ROW_NONE) {
+    throw new Error('Could not find row in placeCardByAlgorithm2');
+  }
+
+  // this algorithm tries to align numbers virtically, so look for a space that has this number
+  if (coord.col === COL_NONE) {
+    for (let col = 0; col < 5; col += 1) {
+      if (isCardNone(placedCards[col][coord.row])) {
+        if (colHasNumber(col, card.number, placedCards)) {
+          // found the column
+          coord.col = col;
+          break;
+        }
+      }
+    }
+  }
+
+  // if not found a matching column for this number, place in column with zero or one other card, else in column with least number of cards in already (that is a space)
+  if (coord.col === COL_NONE) {
+    coord.col = colWithLeastCards(coord.row, placedCards);
+
+    // TODO: Would be better to look for the least spoilt card, that leaves the best potential - apply this to all algorithms
+  }
+
+  // we should have found a column by now
+  if (coord.col === COL_NONE) {
+    throw new Error('Could not find column in placeCardByAlgorithm2');
+  }
+
+  // we now know where to place the card
+  return coord;
 };

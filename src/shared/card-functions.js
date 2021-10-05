@@ -35,8 +35,8 @@ export function row2Top(row) {
   return 20 + row * CARD_HEIGHT;
 }
 
-// sort the hand, putting 'NONE' cards at the end
-function sortHand(hand) {
+// sort the hand, putting 'NONE' cards at the end - note that this sorts in situ - no new object is created
+export function sortHand(hand) {
   // do bubble sort to order the cards, coping with 'NONE' cards
   for (let length = 5; length > 1; length -= 1) {
     // move the biggest card from first entry to length
