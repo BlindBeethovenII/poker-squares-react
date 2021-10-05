@@ -2,9 +2,21 @@ import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { CARD_NONE, SUIT_NONE } from '../shared/constants';
+import {
+  CARD_NONE,
+  ALGORITHM_FULL_HOUSES_THEN_PAIRS,
+  ALGORITHM_FULL_HOUSES_THEN_FLUSHES,
+  ALGORITHM_FLUSHES_THEN_VERTICAL_NUMBERS,
+  ALGORITHM_LAST_ROW_VERTICAL_THEN_FLUSHES_THEN_VERTICAL_NUMBERS,
+  ALGORITHM_STRAIGHTS_THEN_PAIRS,
+} from '../shared/constants';
 import { cloneByJSON } from '../useful-js-functions';
 import { updateHandScores, col2Left, row2Top, createShuffledDeck } from '../shared/card-functions';
+import {
+  placeCardByAlgorithm0,
+  placeCardByAlgorithm1,
+  placeCardByAlgorithm2,
+} from '../shared/card-placement-algorithms';
 
 const GameStateContext = React.createContext({});
 
@@ -28,7 +40,7 @@ export const GameStateContextProvider = ({ children }) => {
   const closeMainMenu = () => setMainMenuOpen(false);
 
   // the select opponent level menu open state bool and functions
-  const [selectOpponentLevelOpen, setSelectOpponentLevelOpen] = useState(true);
+  const [selectOpponentLevelOpen, setSelectOpponentLevelOpen] = useState(false);
   const openSelectOpponentLevel = () => setSelectOpponentLevelOpen(true);
   const closeSelectOpponentLevel = () => setSelectOpponentLevelOpen(false);
 
@@ -125,23 +137,46 @@ export const GameStateContextProvider = ({ children }) => {
     setCurrentCardIndex(0);
   };
 
+  // the opponent level
+  const [opponentLevel, setOpponentLevel] = useState(1);
+
   // move current card to given col,row, score it, and move current card to next card in the deck
   // and play the opponent's card as well
   const placeCurrentCard = (col, row) => {
     const currentCard = deck[currentCardIndex];
 
     // decide where the oppponent card is going
-    // TODO - for now just any free space we find in this algorithm
-    let opponentCol = 0;
-    let oppponentRow = 0;
-    for (let colIndex = 0; colIndex < 5; colIndex += 1) {
-      for (let rowIndex = 0; rowIndex < 5; rowIndex += 1) {
-        if (opponentPlacedCards[colIndex][rowIndex].suit === SUIT_NONE) {
-          opponentCol = colIndex;
-          oppponentRow = rowIndex;
-        }
-      }
+    // the algorithm to use is based on the opponents level
+    let cardPlacementAlgorithm;
+    let algorithm;
+    switch (opponentLevel) {
+      case 1:
+      default:
+        cardPlacementAlgorithm = placeCardByAlgorithm1;
+        algorithm = ALGORITHM_FULL_HOUSES_THEN_PAIRS;
+        break;
+
+      case 2:
+        cardPlacementAlgorithm = placeCardByAlgorithm1;
+        algorithm = ALGORITHM_FULL_HOUSES_THEN_FLUSHES;
+        break;
+
+      case 3:
+        cardPlacementAlgorithm = placeCardByAlgorithm0;
+        algorithm = ALGORITHM_FLUSHES_THEN_VERTICAL_NUMBERS;
+        break;
+
+      case 4:
+        cardPlacementAlgorithm = placeCardByAlgorithm0;
+        algorithm = ALGORITHM_LAST_ROW_VERTICAL_THEN_FLUSHES_THEN_VERTICAL_NUMBERS;
+        break;
+
+      case 5:
+        cardPlacementAlgorithm = placeCardByAlgorithm2;
+        algorithm = ALGORITHM_STRAIGHTS_THEN_PAIRS;
+        break;
     }
+    const { col: opponentCol, row: oppponentRow } = cardPlacementAlgorithm(currentCard, opponentPlacedCards, algorithm);
 
     placeAndScoreCard(col, row, opponentCol, oppponentRow, currentCard);
 
@@ -151,8 +186,7 @@ export const GameStateContextProvider = ({ children }) => {
     newDeck[currentCardIndex].top = row2Top(row);
     setDeck(newDeck);
 
-    // and the same for the opponent - remember the opponent deck is just the placed cards
-    // TODO: for now placed in same col/row - just need to know the left is in a different place
+    // and the same for the opponent, rememerbing to clone/set the card for this placement, and that these cards are laid out 8 columns to the right
     const newOpponentDeck = cloneByJSON(opponentDeck);
     const opponentCurrentCard = cloneByJSON(currentCard);
     newOpponentDeck[currentCardIndex] = opponentCurrentCard;
@@ -163,9 +197,6 @@ export const GameStateContextProvider = ({ children }) => {
     // onto the next card
     setCurrentCardIndex(currentCardIndex + 1);
   };
-
-  // the opponent level
-  const [opponentLevel, setOpponentLevel] = useState(1);
 
   // expose our state and state functions via the context
   const context = {
