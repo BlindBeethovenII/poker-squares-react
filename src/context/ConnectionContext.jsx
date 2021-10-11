@@ -17,6 +17,7 @@ export const ConnectionContextProvider = ({ children }) => {
 
   // reset the connection
   const resetConnection = () => {
+    console.log(`resetConnection called`);
     if (peer) {
       peer.destroy();
     }
@@ -28,7 +29,7 @@ export const ConnectionContextProvider = ({ children }) => {
   };
 
   // host a new game, and send the given data when a connection is made
-  const hostGame = (data) => {
+  const hostGame = (data, processData) => {
     const localPeer = new Peer('poker-squares-react');
 
     // remember the peer, so it can be reset
@@ -51,6 +52,8 @@ export const ConnectionContextProvider = ({ children }) => {
           conn.send(data);
         }
       });
+
+      conn.on('data', processData);
     });
 
     localPeer.on('disconnected', () => {
@@ -76,10 +79,14 @@ export const ConnectionContextProvider = ({ children }) => {
       const conn = localPeer.connect('poker-squares-react');
 
       conn.on('open', () => {
+        console.log(`joinGame conn.on() open fired with conn=${conn} and connection=${connection}`);
         setConnection(conn);
       });
 
-      conn.on('data', processData);
+      conn.on('data', (data) => {
+        console.log(`joinGame conn.on() data fired with conn=${conn} and connection=${connection}`);
+        processData(data, conn);
+      });
 
       conn.on('close', () => {
         setClosed(true);
@@ -107,9 +114,12 @@ export const ConnectionContextProvider = ({ children }) => {
   };
 
   // send the given data packet down our connection, if one exists
-  const sendData = (data) => {
+  // TODO - can't get setConnection() in ConnectionContextProvider to set state before the Join Peer processData is called - so for now passing conn as well
+  const sendData = (data, conn) => {
     if (connection) {
       connection.send(data);
+    } else if (conn) {
+      conn.send(data);
     } else {
       console.log(`ConnectionConext logical error: sendData called when connection not defined`);
     }

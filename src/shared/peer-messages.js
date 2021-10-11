@@ -1,11 +1,13 @@
 // constructors for the peer messages
 
-const DECK = 'DECK';
-const NAME = 'NAME';
+const NEW_GAME = 'NEW_GAME';
+const OPPONENT_NAME = 'OPPONENT_NAME';
 
-export const createDeckMessage = (deck) => ({ type: DECK, deck });
-export const createNameMessage = (name) => ({ type: NAME, name });
+export const createNewGameMessage = (name, deck) => ({ type: NEW_GAME, name, deck });
+export const createOpponentNameMessage = (name) => ({ type: OPPONENT_NAME, name });
 
-export const isDeckMessage = (message) => message.type === DECK;
+export const isNewGameMessage = (message) => message.type === NEW_GAME;
+export const isOpponentNameMessage = (message) => message.type === OPPONENT_NAME;
 
 export const getDeckFromMessage = (message) => message.deck;
+export const getNameFromMessage = (message) => message.name;

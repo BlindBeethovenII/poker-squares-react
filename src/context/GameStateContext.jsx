@@ -9,6 +9,7 @@ import {
   ALGORITHM_FLUSHES_THEN_VERTICAL_NUMBERS,
   ALGORITHM_LAST_ROW_VERTICAL_THEN_FLUSHES_THEN_VERTICAL_NUMBERS,
   ALGORITHM_STRAIGHTS_THEN_PAIRS,
+  OPPONENT_TYPE_AI,
 } from '../shared/constants';
 import { cloneByJSON } from '../useful-js-functions';
 import { updateHandScores, col2Left, row2Top, createShuffledDeck } from '../shared/card-functions';
@@ -53,6 +54,13 @@ export const GameStateContextProvider = ({ children }) => {
   const [joinPeerGameOpen, setJoinPeerGameOpen] = useState(false);
   const openJoinPeerGame = () => setJoinPeerGameOpen(true);
   const closeJoinPeerGame = () => setJoinPeerGameOpen(false);
+
+  // the opponent type - human or AI
+  const [opponentType, setOpponentType] = useState(OPPONENT_TYPE_AI);
+
+  // the your name and opponent name for a peer game
+  const [yourName, setYourName] = useState(false);
+  const [opponentName, setOpponentName] = useState(false);
 
   // the placed cards
   const [placedCards, setPlacedCards] = useState(emptyPlacedCards());
@@ -219,6 +227,16 @@ export const GameStateContextProvider = ({ children }) => {
     joinPeerGameOpen,
     openJoinPeerGame,
     closeJoinPeerGame,
+
+    // the opponent type - human or AI
+    opponentType,
+    setOpponentType,
+
+    // the names in a peer game
+    yourName,
+    setYourName,
+    opponentName,
+    setOpponentName,
 
     // the placed cards and scores, both for the player and the opponent
     placedCards,

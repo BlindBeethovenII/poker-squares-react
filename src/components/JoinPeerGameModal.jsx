@@ -6,7 +6,13 @@ import styled from 'styled-components';
 import GameStateContext from '../context/GameStateContext';
 import ConnectionContext from '../context/ConnectionContext';
 
-import { isDeckMessage, getDeckFromMessage } from '../shared/peer-messages';
+import {
+  isNewGameMessage,
+  getNameFromMessage,
+  getDeckFromMessage,
+  createOpponentNameMessage,
+} from '../shared/peer-messages';
+import { OPPONENT_TYPE_HUMAN } from '../shared/constants';
 
 const Button = styled.button`
   background: #761d38;
@@ -38,12 +44,34 @@ const Info = styled.p`
   text-align: center;
 `;
 
+const TextInput = styled.input`
+  type: text;
+  color: #761d38;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: 2px solid #761d38;
+  border-radius: 3px;
+  background: papayawhip;
+  font-size: 1em;
+  font-weight: bold;
+`;
+
 const JoinPeerGameModal = () => {
   const [readyToPlay, setReadyToPlay] = useState(false);
   const [unexpectedData, setUnexpectedData] = useState('');
+  const [name, setName] = useState('');
 
-  const { openMainMenu, joinPeerGameOpen, closeJoinPeerGame, setDeck } = useContext(GameStateContext);
-  const { brokerId, error, connectedTo, disconnected, closed, resetConnection, joinGame } = useContext(
+  const {
+    openMainMenu,
+    joinPeerGameOpen,
+    closeJoinPeerGame,
+    setDeck,
+    setOpponentName,
+    setYourName,
+    setOpponentType,
+  } = useContext(GameStateContext);
+
+  const { brokerId, error, connectedTo, disconnected, closed, resetConnection, joinGame, sendData } = useContext(
     ConnectionContext,
   );
 
@@ -56,8 +84,14 @@ const JoinPeerGameModal = () => {
     }
   }, [joinPeerGameOpen]);
 
-  const processData = (data) => {
-    if (isDeckMessage(data)) {
+  // the join game peer process data function to process data it gets from the host
+  // TODO - can't get setConnection() in ConnectionContextProvider to set state before this processData is called - so for now passing conn as well
+  const processData = (data, conn) => {
+    if (isNewGameMessage(data)) {
+      setOpponentType(OPPONENT_TYPE_HUMAN);
+      setOpponentName(getNameFromMessage(data));
+      setYourName(name);
+      sendData(createOpponentNameMessage(name), conn);
       setDeck(getDeckFromMessage(data));
       setReadyToPlay(true);
     } else {
@@ -78,6 +112,7 @@ const JoinPeerGameModal = () => {
     <div>
       <Modal open={joinPeerGameOpen} onClose={closeJoinPeerGameDialog} center>
         <Title>Join Peer Game</Title>
+        <TextInput placeholder="Enter your name" onChange={(e) => setName(e.target.value)} />
         <Button onClick={joinNewGame}>Join</Button>
         {brokerId && <Info>Broker Id: {brokerId}</Info>}
         {connectedTo && <Info>Connected To: {connectedTo}</Info>}

@@ -5,6 +5,8 @@ import styled from 'styled-components';
 
 import GameStateContext from '../context/GameStateContext';
 
+import { OPPONENT_TYPE_AI } from '../shared/constants';
+
 import AvatarLevel1 from '../images/avatars/1veryeasy.png';
 import AvatarLevel2 from '../images/avatars/2easy.png';
 import AvatarLevel3 from '../images/avatars/3medium.png';
@@ -56,6 +58,7 @@ const SelectOpponentLevelModal = () => {
     resetHand,
     resetDeck,
     setOpponentLevel,
+    setOpponentType,
   } = useContext(GameStateContext);
 
   const closeBackToMainMenu = () => {
@@ -65,6 +68,7 @@ const SelectOpponentLevelModal = () => {
 
   const localStartGame = (level) => {
     closeSelectOpponentLevel();
+    setOpponentType(OPPONENT_TYPE_AI);
     setOpponentLevel(level);
     resetHand();
     resetDeck();

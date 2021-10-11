@@ -4,7 +4,7 @@ import PlayArea from './components/PlayArea';
 import Cards from './components/Cards';
 import Scores from './components/Scores';
 import GitInfo from './components/GitInfo';
-import OpponentImage from './components/OpponentImage';
+import OpponentGraphics from './components/OpponentGraphics';
 import MainMenuButton from './components/MainMenuButton';
 import MainMenuModal from './components/MainMenuModal';
 import SelectOpponentLevelModal from './components/SelectOpponentLevelModal';
@@ -21,7 +21,7 @@ const App = () => (
       <Cards />
       <Scores />
       <GitInfo />
-      <OpponentImage />
+      <OpponentGraphics />
       <MainMenuButton />
       <MainMenuModal />
       <SelectOpponentLevelModal />

@@ -53,3 +53,6 @@ export const ALGORITHM_STRAIGHTS_THEN_PAIRS = 'ALG_STP';
 
 export const COL_NONE = -1;
 export const ROW_NONE = -1;
+
+export const OPPONENT_TYPE_HUMAN = 'HUMAN';
+export const OPPONENT_TYPE_AI = 'AI';
