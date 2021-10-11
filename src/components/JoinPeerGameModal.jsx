@@ -60,6 +60,7 @@ const JoinPeerGameModal = () => {
   const [readyToPlay, setReadyToPlay] = useState(false);
   const [unexpectedData, setUnexpectedData] = useState('');
   const [name, setName] = useState('');
+  const [gameId, setGameId] = useState('');
 
   const {
     openMainMenu,
@@ -71,9 +72,17 @@ const JoinPeerGameModal = () => {
     setOpponentType,
   } = useContext(GameStateContext);
 
-  const { brokerId, error, connectedTo, disconnected, closed, resetConnection, joinGame, sendData } = useContext(
-    ConnectionContext,
-  );
+  const {
+    brokerId,
+    error,
+    connectedTo,
+    disconnected,
+    closed,
+    resetConnection,
+    joinGame,
+    sendData,
+    clearError,
+  } = useContext(ConnectionContext);
 
   useEffect(() => {
     if (joinPeerGameOpen) {
@@ -100,7 +109,8 @@ const JoinPeerGameModal = () => {
   };
 
   const joinNewGame = () => {
-    joinGame(processData);
+    clearError();
+    joinGame(gameId, processData);
   };
 
   const closeJoinPeerGameDialog = () => {
@@ -113,6 +123,7 @@ const JoinPeerGameModal = () => {
       <Modal open={joinPeerGameOpen} onClose={closeJoinPeerGameDialog} center>
         <Title>Join Peer Game</Title>
         <TextInput placeholder="Enter your name" onChange={(e) => setName(e.target.value)} />
+        <TextInput placeholder="Game Id" onChange={(e) => setGameId(e.target.value)} />
         <Button onClick={joinNewGame}>Join</Button>
         {brokerId && <Info>Broker Id: {brokerId}</Info>}
         {connectedTo && <Info>Connected To: {connectedTo}</Info>}

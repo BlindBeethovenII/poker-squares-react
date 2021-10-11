@@ -52,10 +52,21 @@ const TextInput = styled.input`
   font-weight: bold;
 `;
 
+const GameId = styled.p`
+  background: #761d38;
+  color: white;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: 2px solid #761d38;
+  border-radius: 3px;
+  text-align: center;
+`;
+
 const HostPeerGameModal = () => {
   const [readyToPlay, setReadyToPlay] = useState(false);
   const [name, setName] = useState('');
   const [unexpectedData, setUnexpectedData] = useState('');
+  const [gameId, setGameId] = useState('');
 
   const {
     openMainMenu,
@@ -91,7 +102,11 @@ const HostPeerGameModal = () => {
 
   const hostNewGame = () => {
     const deck = createShuffledDeck();
-    hostGame(createNewGameMessage(name, deck), processData);
+    // an algorithm I found on the web to generate a 4 digit hex string
+    // eslint-disable-next-line no-bitwise
+    const id = ((Math.random() * 0xffff) << 0).toString(16);
+    setGameId(id);
+    hostGame(id, createNewGameMessage(name, deck), processData);
     setOpponentType(OPPONENT_TYPE_HUMAN);
     setYourName(name);
     setDeck(deck);
@@ -109,6 +124,7 @@ const HostPeerGameModal = () => {
         <Title>Host Peer Game</Title>
         <TextInput placeholder="Enter your name" onChange={(e) => setName(e.target.value)} />
         <Button onClick={hostNewGame}>Host</Button>
+        {gameId && <GameId>Game Id: {gameId}</GameId>}
         {brokerId && <Info>Broker Id: {brokerId}</Info>}
         {connectedTo && <Info>Connected To: {connectedTo}</Info>}
         {disconnected && <Info>Disconnected</Info>}

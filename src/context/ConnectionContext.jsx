@@ -29,8 +29,8 @@ export const ConnectionContextProvider = ({ children }) => {
   };
 
   // host a new game, and send the given data when a connection is made
-  const hostGame = (data, processData) => {
-    const localPeer = new Peer('poker-squares-react');
+  const hostGame = (id, data, processData) => {
+    const localPeer = new Peer(`poker-squares-react-${id}`);
 
     // remember the peer, so it can be reset
     setPeer(localPeer);
@@ -65,7 +65,7 @@ export const ConnectionContextProvider = ({ children }) => {
     });
   };
 
-  const joinGame = (processData) => {
+  const joinGame = (id, processData) => {
     const localPeer = new Peer();
 
     // remember the peer, so it can be reset
@@ -76,7 +76,7 @@ export const ConnectionContextProvider = ({ children }) => {
         setBrokerId(localPeer.id);
       }
 
-      const conn = localPeer.connect('poker-squares-react');
+      const conn = localPeer.connect(`poker-squares-react-${id}`);
 
       conn.on('open', () => {
         console.log(`joinGame conn.on() open fired with conn=${conn} and connection=${connection}`);
@@ -125,6 +125,11 @@ export const ConnectionContextProvider = ({ children }) => {
     }
   };
 
+  // some clients want to clear the error before they try again
+  const clearError = () => {
+    setError(undefined);
+  };
+
   // expose our state and state functions via the context
   const context = {
     // our state
@@ -139,6 +144,7 @@ export const ConnectionContextProvider = ({ children }) => {
     hostGame,
     joinGame,
     sendData,
+    clearError,
   };
 
   return <ConnectionContext.Provider value={context}>{children}</ConnectionContext.Provider>;
