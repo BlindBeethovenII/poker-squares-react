@@ -12,12 +12,19 @@ import {
   OPPONENT_TYPE_AI,
 } from '../shared/constants';
 import { cloneByJSON } from '../useful-js-functions';
-import { updateHandScores, col2Left, row2Top, createShuffledDeck } from '../shared/card-functions';
+import {
+  updateHandScores,
+  col2Left,
+  row2Top,
+  createShuffledDeck,
+  generateOpponentCardId,
+} from '../shared/card-functions';
 import {
   placeCardByAlgorithm0,
   placeCardByAlgorithm1,
   placeCardByAlgorithm2,
 } from '../shared/card-placement-algorithms';
+import { createPlaceCardMessage } from '../shared/peer-messages';
 
 const GameStateContext = React.createContext({});
 
@@ -80,6 +87,7 @@ export const GameStateContextProvider = ({ children }) => {
 
   // reset the hand
   const resetHand = () => {
+    console.log('GameStateContext resetHand called');
     setPlacedCards(emptyPlacedCards());
     setOpponentPlacedCards(emptyPlacedCards());
     setScoresRows(emptyScoresRows());
@@ -90,7 +98,12 @@ export const GameStateContextProvider = ({ children }) => {
     setOpponentScoreTotal(0);
   };
 
-  // place the given card at the stated column and row
+  // the deck with its current card index
+  // note: deck contains a shuffled deck - used for the master deal - where the join peer is sent it from the host
+  const [deck, setDeck] = useState([]);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+
+  // place the given card at the stated column and row - this is always done at currentCardIndex
   const placeAndScoreCard = (col, row, card) => {
     const newPlacedCards = cloneByJSON(placedCards);
     newPlacedCards[col][row] = { suit: card.suit, number: card.number };
@@ -107,13 +120,26 @@ export const GameStateContextProvider = ({ children }) => {
     setScoresRows(newScoresRows);
     setScoresCols(newScoresCols);
     setScoreTotal(newScoreTotal);
+
+    // and update the deck and remember it - note the player's cards are drawn from the deck
+    const newDeck = cloneByJSON(deck);
+    newDeck[currentCardIndex].left = col2Left(col);
+    newDeck[currentCardIndex].top = row2Top(row);
+    setDeck(newDeck);
   };
 
-  // place the given card at the stated opponent's column and row
+  // place the given card at the stated opponent's column and row, with the given card index
   const placeAndScoreOpponentCard = (opponentCol, oppponentRow, card) => {
-    // place the opponent's card in the stated col/row
+    console.log(`placeAndScoreOpponentCard opponentPlacedCards=${JSON.stringify(opponentPlacedCards)}`);
+
+    // place the opponent's card in the stated col/row - note: the opponent's cards are drawn from the placed cards
     const newOpponentPlacedCards = cloneByJSON(opponentPlacedCards);
-    newOpponentPlacedCards[opponentCol][oppponentRow] = { suit: card.suit, number: card.number };
+    const newCard = cloneByJSON(card);
+    newCard.left = col2Left(opponentCol + 8);
+    newCard.top = row2Top(oppponentRow);
+    // and we need a unique id for the React Card object
+    newCard.id = generateOpponentCardId(card.suit, card.number);
+    newOpponentPlacedCards[opponentCol][oppponentRow] = newCard;
     const {
       scoresRows: newOpponentScoresRows,
       scoresCols: newOpponentScoresCols,
@@ -121,22 +147,20 @@ export const GameStateContextProvider = ({ children }) => {
     } = updateHandScores(opponentCol, oppponentRow, opponentScoresCols, opponentScoresRows, newOpponentPlacedCards);
 
     // remember the updated Opponent hand
+    console.log(
+      `placeAndScoreOpponentCard about to call setOpponentPlacedCards newOpponentPlacedCards=${JSON.stringify(
+        newOpponentPlacedCards,
+      )}`,
+    );
     setOpponentPlacedCards(newOpponentPlacedCards);
     setOpponentScoresRows(newOpponentScoresRows);
     setOpponentScoresCols(newOpponentScoresCols);
     setOpponentScoreTotal(newOpponentScoreTotal);
   };
 
-  // the deck with its current card index
-  // note: deck contains a shuffled deck - but opponentDeck only includes the placed cards
-  const [deck, setDeck] = useState([]);
-  const [opponentDeck, setOpponentDeck] = useState([]);
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
-
   // set the deck and go back to first card, and reset the hand/scores
   const setDeckAndResetCurrentCardIndex = (newDeck) => {
     setDeck(newDeck);
-    setOpponentDeck([]);
     setCurrentCardIndex(0);
     resetHand();
   };
@@ -144,7 +168,6 @@ export const GameStateContextProvider = ({ children }) => {
   // reset the deck to a random shuffle
   const resetDeck = () => {
     setDeck(createShuffledDeck());
-    setOpponentDeck([]);
     setCurrentCardIndex(0);
   };
 
@@ -153,7 +176,8 @@ export const GameStateContextProvider = ({ children }) => {
 
   // move current card to given col,row, score it, and move current card to next card in the deck
   // and if we are playing an AI, then play the AI's card as well
-  const placeCurrentCard = (col, row) => {
+  // we have to provide sendData as GameStateContext is within the ConnectionContext and so cannot access it itself
+  const placeCurrentCard = (col, row, sendData) => {
     const currentCard = deck[currentCardIndex];
 
     if (opponentType === OPPONENT_TYPE_AI) {
@@ -195,24 +219,13 @@ export const GameStateContextProvider = ({ children }) => {
       );
 
       placeAndScoreOpponentCard(opponentCol, oppponentRow, currentCard);
-
-      // update the opponent deck, remembering to clone/set the card for this placement, and that these cards are laid out 8 columns to the right
-      const newOpponentDeck = cloneByJSON(opponentDeck);
-      const opponentCurrentCard = cloneByJSON(currentCard);
-      newOpponentDeck[currentCardIndex] = opponentCurrentCard;
-      newOpponentDeck[currentCardIndex].left = col2Left(opponentCol + 8);
-      newOpponentDeck[currentCardIndex].top = row2Top(oppponentRow);
-      setOpponentDeck(newOpponentDeck);
+    } else {
+      // send this card to the human opponent
+      sendData(createPlaceCardMessage(col, row, currentCard.suit, currentCard.number));
     }
 
     // now do the humn place and score
     placeAndScoreCard(col, row, currentCard);
-
-    // update the deck
-    const newDeck = cloneByJSON(deck);
-    newDeck[currentCardIndex].left = col2Left(col);
-    newDeck[currentCardIndex].top = row2Top(row);
-    setDeck(newDeck);
 
     // onto the next card
     setCurrentCardIndex(currentCardIndex + 1);
@@ -265,12 +278,12 @@ export const GameStateContextProvider = ({ children }) => {
 
     // the deck with its current card index
     deck,
-    opponentDeck,
     currentCardIndex,
     gameInProgress: !!deck?.length,
     setDeck: setDeckAndResetCurrentCardIndex,
     resetDeck,
     placeCurrentCard,
+    placeAndScoreOpponentCard,
 
     // the opponent level
     opponentLevel,

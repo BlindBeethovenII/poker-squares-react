@@ -16,7 +16,7 @@ import { sortHand } from './card-functions';
 // NOTE: we cannot do "card === CARD_NONE" as we use cloneByJSON() for the placedCards which will create a new object
 // So using a function which looks in the object for its suit/number
 // This function assumes a card object is given
-const isCardNone = (card) => card.suit === SUIT_NONE && card.number === NUMBER_NONE;
+export const isCardNone = (card) => card.suit === SUIT_NONE && card.number === NUMBER_NONE;
 
 // return true if this row has an empty space
 const rowHasEmptySpace = (row, placedCards) => {

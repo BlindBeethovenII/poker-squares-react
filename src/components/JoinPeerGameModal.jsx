@@ -8,9 +8,14 @@ import ConnectionContext from '../context/ConnectionContext';
 
 import {
   isNewGameMessage,
+  isPlaceCardMessage,
   getNameFromMessage,
   getDeckFromMessage,
+  getColFromMessage,
+  getRowFromMessage,
   createOpponentNameMessage,
+  getSuitFromMessage,
+  getNumberFromMessage,
 } from '../shared/peer-messages';
 import { OPPONENT_TYPE_HUMAN } from '../shared/constants';
 
@@ -70,6 +75,8 @@ const JoinPeerGameModal = () => {
     setOpponentName,
     setYourName,
     setOpponentType,
+    placeAndScoreOpponentCard,
+    opponentPlacedCards,
   } = useContext(GameStateContext);
 
   const {
@@ -97,12 +104,23 @@ const JoinPeerGameModal = () => {
   // TODO - can't get setConnection() in ConnectionContextProvider to set state before this processData is called - so for now passing conn as well
   const processData = (data, conn) => {
     if (isNewGameMessage(data)) {
+      console.log('JoinPeerGameModal processData received new game message');
       setOpponentType(OPPONENT_TYPE_HUMAN);
       setOpponentName(getNameFromMessage(data));
       setYourName(name);
       sendData(createOpponentNameMessage(name), conn);
       setDeck(getDeckFromMessage(data));
       setReadyToPlay(true);
+    } else if (isPlaceCardMessage(data)) {
+      console.log('JoinPeerGameModal processData received place card message');
+      console.log(`About to call placeAndScoreOpponentCard opponentPlacedCards=${JSON.stringify(opponentPlacedCards)}`);
+
+      const suit = getSuitFromMessage(data);
+      const number = getNumberFromMessage(data);
+      placeAndScoreOpponentCard(getColFromMessage(data), getRowFromMessage(data), {
+        suit,
+        number,
+      });
     } else {
       setUnexpectedData(data.type);
     }

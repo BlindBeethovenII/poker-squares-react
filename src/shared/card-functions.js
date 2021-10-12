@@ -329,13 +329,17 @@ export const cardSuitToFillColour = (suit) => {
 // Simple hack to avoid the "Do not use Array index in keys" eslint error
 export const keyFromIndex = (id, index, player) => `${id}_${index}_${player}`;
 
+// the simple algorithm to generate the player and opponent card id from the card's suit and number
+export const generateCardId = (suit, number) => `card_${suit}_${number}`;
+export const generateOpponentCardId = (suit, number) => `opponentcard_${suit}_${number}`;
+
 // helper function to create a suffled deck
 export const createShuffledDeck = () => {
   // put all the cards in the deck, placing at the dealing position
   let deck = [];
   SUITS.map((suit) =>
     NUMBERS.map((number) =>
-      deck.push({ suit, number, left: col2Left(DEAL_COL), top: row2Top(DEAL_ROW), id: `card_${suit}_${number}` }),
+      deck.push({ suit, number, left: col2Left(DEAL_COL), top: row2Top(DEAL_ROW), id: generateCardId(suit, number) }),
     ),
   );
 

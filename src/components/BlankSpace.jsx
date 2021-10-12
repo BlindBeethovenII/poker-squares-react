@@ -8,6 +8,7 @@ import CardBaseImage from '../images/cards/cardbase.png';
 
 import { col2Left, row2Top } from '../shared/card-functions';
 import GameStateContext from '../context/GameStateContext';
+import ConnectionContext from '../context/ConnectionContext';
 
 // The pulse
 const pulse = keyframes`
@@ -35,6 +36,7 @@ const BlankSpace = (props) => {
   const { col, row, clickable } = props;
 
   const { deck, placeCurrentCard } = useContext(GameStateContext);
+  const { sendData } = useContext(ConnectionContext);
 
   const [processedClick, setProcessedClick] = useState(false);
   const [useAnimation, setUseAnimation] = useState(false);
@@ -66,7 +68,7 @@ const BlankSpace = (props) => {
     // console.log(`onClick for ${col} ${row} called`);
     if (!processedClick && clickable) {
       setUseAnimation(true);
-      placeCurrentCard(col, row);
+      placeCurrentCard(col, row, sendData);
       setProcessedClick(true);
     }
   };

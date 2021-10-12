@@ -7,7 +7,16 @@ import GameStateContext from '../context/GameStateContext';
 import ConnectionContext from '../context/ConnectionContext';
 
 import { createShuffledDeck } from '../shared/card-functions';
-import { createNewGameMessage, isOpponentNameMessage, getNameFromMessage } from '../shared/peer-messages';
+import {
+  createNewGameMessage,
+  isOpponentNameMessage,
+  getNameFromMessage,
+  isPlaceCardMessage,
+  getSuitFromMessage,
+  getNumberFromMessage,
+  getColFromMessage,
+  getRowFromMessage,
+} from '../shared/peer-messages';
 import { OPPONENT_TYPE_HUMAN } from '../shared/constants';
 
 const Button = styled.button`
@@ -76,6 +85,8 @@ const HostPeerGameModal = () => {
     setOpponentType,
     setYourName,
     setOpponentName,
+    opponentPlacedCards,
+    placeAndScoreOpponentCard,
   } = useContext(GameStateContext);
 
   const { brokerId, error, connectedTo, disconnected, closed, resetConnection, hostGame } = useContext(
@@ -95,6 +106,16 @@ const HostPeerGameModal = () => {
   const processData = (data) => {
     if (isOpponentNameMessage(data)) {
       setOpponentName(getNameFromMessage(data));
+    } else if (isPlaceCardMessage(data)) {
+      console.log('HostPeerGameModal processData received place card message');
+      console.log(`About to call placeAndScoreOpponentCard opponentPlacedCards=${JSON.stringify(opponentPlacedCards)}`);
+
+      const suit = getSuitFromMessage(data);
+      const number = getNumberFromMessage(data);
+      placeAndScoreOpponentCard(getColFromMessage(data), getRowFromMessage(data), {
+        suit,
+        number,
+      });
     } else {
       setUnexpectedData(data.type);
     }
