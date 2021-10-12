@@ -29,7 +29,10 @@ exec('git log -1 --oneline', (err, stdout /* , stderr */) => {
   // either way, write some output
   fs.writeFileSync(
     outputFileName,
-    `/* eslint-disable prettier/prettier */\nexport default {\n  logMessage: '${logMessage}',\n  date: '${date}',\n};\n`,
+    `/* eslint-disable prettier/prettier */\nexport default {\n  logMessage: '${logMessage.replace(
+      /'/g,
+      "\\'",
+    )}',\n  date: '${date}',\n};\n`,
   );
   console.log('./scripts/generateGitLogFile.js | File Generated');
 });
