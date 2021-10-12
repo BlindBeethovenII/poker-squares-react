@@ -91,7 +91,7 @@ export const GameStateContextProvider = ({ children }) => {
   };
 
   // place the given card at the stated column and row
-  const placeAndScoreCard = (col, row, opponentCol, oppponentRow, card) => {
+  const placeAndScoreCard = (col, row, card) => {
     const newPlacedCards = cloneByJSON(placedCards);
     newPlacedCards[col][row] = { suit: card.suit, number: card.number };
     const { scoresRows: newScoresRows, scoresCols: newScoresCols, scoreTotal: newScoreTotal } = updateHandScores(
@@ -107,7 +107,10 @@ export const GameStateContextProvider = ({ children }) => {
     setScoresRows(newScoresRows);
     setScoresCols(newScoresCols);
     setScoreTotal(newScoreTotal);
+  };
 
+  // place the given card at the stated opponent's column and row
+  const placeAndScoreOpponentCard = (opponentCol, oppponentRow, card) => {
     // place the opponent's card in the stated col/row
     const newOpponentPlacedCards = cloneByJSON(opponentPlacedCards);
     newOpponentPlacedCards[opponentCol][oppponentRow] = { suit: card.suit, number: card.number };
@@ -149,58 +152,67 @@ export const GameStateContextProvider = ({ children }) => {
   const [opponentLevel, setOpponentLevel] = useState(1);
 
   // move current card to given col,row, score it, and move current card to next card in the deck
-  // and play the opponent's card as well
+  // and if we are playing an AI, then play the AI's card as well
   const placeCurrentCard = (col, row) => {
     const currentCard = deck[currentCardIndex];
 
-    // decide where the oppponent card is going
-    // the algorithm to use is based on the opponents level
-    let cardPlacementAlgorithm;
-    let algorithm;
-    switch (opponentLevel) {
-      case 1:
-      default:
-        cardPlacementAlgorithm = placeCardByAlgorithm1;
-        algorithm = ALGORITHM_FULL_HOUSES_THEN_PAIRS;
-        break;
+    if (opponentType === OPPONENT_TYPE_AI) {
+      // decide where the oppponent card is going
+      // the algorithm to use is based on the opponents level
+      let cardPlacementAlgorithm;
+      let algorithm;
+      switch (opponentLevel) {
+        case 1:
+        default:
+          cardPlacementAlgorithm = placeCardByAlgorithm1;
+          algorithm = ALGORITHM_FULL_HOUSES_THEN_PAIRS;
+          break;
 
-      case 2:
-        cardPlacementAlgorithm = placeCardByAlgorithm1;
-        algorithm = ALGORITHM_FULL_HOUSES_THEN_FLUSHES;
-        break;
+        case 2:
+          cardPlacementAlgorithm = placeCardByAlgorithm1;
+          algorithm = ALGORITHM_FULL_HOUSES_THEN_FLUSHES;
+          break;
 
-      case 3:
-        cardPlacementAlgorithm = placeCardByAlgorithm0;
-        algorithm = ALGORITHM_FLUSHES_THEN_VERTICAL_NUMBERS;
-        break;
+        case 3:
+          cardPlacementAlgorithm = placeCardByAlgorithm0;
+          algorithm = ALGORITHM_FLUSHES_THEN_VERTICAL_NUMBERS;
+          break;
 
-      case 4:
-        cardPlacementAlgorithm = placeCardByAlgorithm0;
-        algorithm = ALGORITHM_LAST_ROW_VERTICAL_THEN_FLUSHES_THEN_VERTICAL_NUMBERS;
-        break;
+        case 4:
+          cardPlacementAlgorithm = placeCardByAlgorithm0;
+          algorithm = ALGORITHM_LAST_ROW_VERTICAL_THEN_FLUSHES_THEN_VERTICAL_NUMBERS;
+          break;
 
-      case 5:
-        cardPlacementAlgorithm = placeCardByAlgorithm2;
-        algorithm = ALGORITHM_STRAIGHTS_THEN_PAIRS;
-        break;
+        case 5:
+          cardPlacementAlgorithm = placeCardByAlgorithm2;
+          algorithm = ALGORITHM_STRAIGHTS_THEN_PAIRS;
+          break;
+      }
+      const { col: opponentCol, row: oppponentRow } = cardPlacementAlgorithm(
+        currentCard,
+        opponentPlacedCards,
+        algorithm,
+      );
+
+      placeAndScoreOpponentCard(opponentCol, oppponentRow, currentCard);
+
+      // update the opponent deck, remembering to clone/set the card for this placement, and that these cards are laid out 8 columns to the right
+      const newOpponentDeck = cloneByJSON(opponentDeck);
+      const opponentCurrentCard = cloneByJSON(currentCard);
+      newOpponentDeck[currentCardIndex] = opponentCurrentCard;
+      newOpponentDeck[currentCardIndex].left = col2Left(opponentCol + 8);
+      newOpponentDeck[currentCardIndex].top = row2Top(oppponentRow);
+      setOpponentDeck(newOpponentDeck);
     }
-    const { col: opponentCol, row: oppponentRow } = cardPlacementAlgorithm(currentCard, opponentPlacedCards, algorithm);
 
-    placeAndScoreCard(col, row, opponentCol, oppponentRow, currentCard);
+    // now do the humn place and score
+    placeAndScoreCard(col, row, currentCard);
 
     // update the deck
     const newDeck = cloneByJSON(deck);
     newDeck[currentCardIndex].left = col2Left(col);
     newDeck[currentCardIndex].top = row2Top(row);
     setDeck(newDeck);
-
-    // and the same for the opponent, rememerbing to clone/set the card for this placement, and that these cards are laid out 8 columns to the right
-    const newOpponentDeck = cloneByJSON(opponentDeck);
-    const opponentCurrentCard = cloneByJSON(currentCard);
-    newOpponentDeck[currentCardIndex] = opponentCurrentCard;
-    newOpponentDeck[currentCardIndex].left = col2Left(opponentCol + 8);
-    newOpponentDeck[currentCardIndex].top = row2Top(oppponentRow);
-    setOpponentDeck(newOpponentDeck);
 
     // onto the next card
     setCurrentCardIndex(currentCardIndex + 1);
