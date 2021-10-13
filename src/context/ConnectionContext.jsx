@@ -33,14 +33,9 @@ export const ConnectionContextProvider = ({ children }) => {
   const [disconnected, setDisconnected] = useState(false);
   const [closed, setClosed] = useState(false);
 
-  const {
-    setDeck,
-    setOpponentName,
-    setYourName,
-    setOpponentType,
-    placeAndScoreOpponentCard,
-    opponentPlacedCards,
-  } = useContext(GameStateContext);
+  const { setDeck, setOpponentName, setYourName, setOpponentType, placeAndScoreOpponentCard } = useContext(
+    GameStateContext,
+  );
 
   // reset the connection
   const resetConnection = () => {
@@ -56,7 +51,7 @@ export const ConnectionContextProvider = ({ children }) => {
   };
 
   // send the given data packet down our connection, if one exists
-  // TODO - can't get setConnection() in ConnectionContextProvider to set state before the Join Peer processData is called - so for now passing conn as well
+  // can't always use connection, due to code being called from event listeners - could fix - but this hack is okay for now
   const sendData = (data, conn) => {
     if (connection) {
       console.log(`ConnectionConext sendData with connection defined for ${data.type}`);
@@ -78,14 +73,11 @@ export const ConnectionContextProvider = ({ children }) => {
 
     // this is how we process data we get from the join peer
     const processData = (data) => {
+      console.log(`hostGame processData received ${data.type} message`);
+
       if (isOpponentNameMessage(data)) {
         setOpponentName(getNameFromMessage(data));
       } else if (isPlaceCardMessage(data)) {
-        console.log('hostGame processData received place card message');
-        console.log(
-          `About to call placeAndScoreOpponentCard opponentPlacedCards=${JSON.stringify(opponentPlacedCards)}`,
-        );
-
         const suit = getSuitFromMessage(data);
         const number = getNumberFromMessage(data);
         placeAndScoreOpponentCard(getColFromMessage(data), getRowFromMessage(data), {
@@ -140,8 +132,9 @@ export const ConnectionContextProvider = ({ children }) => {
     // this is how we process data we get from the host peer
     // TODO - can't get setConnection() in ConnectionContextProvider to set state before this processData is called - so for now passing conn as well
     const processData = (data, conn) => {
+      console.log(`hostGame processData received ${data.type} message`);
+
       if (isNewGameMessage(data)) {
-        console.log('joinGame processData received new game message');
         setOpponentType(OPPONENT_TYPE_HUMAN);
         setOpponentName(getNameFromMessage(data));
         setYourName(name);
@@ -149,11 +142,6 @@ export const ConnectionContextProvider = ({ children }) => {
         setDeck(getDeckFromMessage(data));
         setReadyToPlay(true);
       } else if (isPlaceCardMessage(data)) {
-        console.log('JoinPeerGameModal processData received place card message');
-        console.log(
-          `About to call placeAndScoreOpponentCard opponentPlacedCards=${JSON.stringify(opponentPlacedCards)}`,
-        );
-
         const suit = getSuitFromMessage(data);
         const number = getNumberFromMessage(data);
         placeAndScoreOpponentCard(getColFromMessage(data), getRowFromMessage(data), {

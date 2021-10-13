@@ -71,19 +71,37 @@ export const GameStateContextProvider = ({ children }) => {
 
   // the placed cards
   const [placedCards, setPlacedCards] = useState(emptyPlacedCards());
-  const [opponentPlacedCards, setOpponentPlacedCards] = useState(emptyPlacedCards());
+  const [opponentPlacedCards, _setOpponentPlacedCards] = useState(emptyPlacedCards());
 
   // the scores by row
   const [scoresRows, setScoresRows] = useState(emptyScoresRows());
-  const [opponentScoresRows, setOpponentScoresRows] = useState(emptyScoresRows());
+  const [opponentScoresRows, _setOpponentScoresRows] = useState(emptyScoresRows());
 
   // the scores by columns
   const [scoresCols, setScoresCols] = useState(emptyScoresCols());
-  const [opponentScoresCols, setOpponentScoresCols] = useState(emptyScoresCols());
+  const [opponentScoresCols, _setOpponentScoresCols] = useState(emptyScoresCols());
 
   // the score total
   const [scoreTotal, setScoreTotal] = useState(0);
   const [opponentScoreTotal, setOpponentScoreTotal] = useState(0);
+
+  // see comment later for code called from event listeners
+  const opponentPlacedCardsRef = React.useRef(opponentPlacedCards);
+  const setOpponentPlacedCards = (data) => {
+    console.log(`setOpponentPlacedCards called ${JSON.stringify(data)}`);
+    opponentPlacedCardsRef.current = data;
+    _setOpponentPlacedCards(data);
+  };
+  const opponentScoresRowsRef = React.useRef(opponentScoresRows);
+  const setOpponentScoresRows = (data) => {
+    opponentScoresRowsRef.current = data;
+    _setOpponentScoresRows(data);
+  };
+  const opponentScoresColsRef = React.useRef(opponentScoresCols);
+  const setOpponentScoresCols = (data) => {
+    opponentScoresColsRef.current = data;
+    _setOpponentScoresCols(data);
+  };
 
   // reset the hand
   const resetHand = () => {
@@ -129,11 +147,15 @@ export const GameStateContextProvider = ({ children }) => {
   };
 
   // place the given card at the stated opponent's column and row, with the given card index
+  // this is called from a peer data event listener so we need to use useRef so the latest value of opponentPlacedCards is available to this function
   const placeAndScoreOpponentCard = (opponentCol, oppponentRow, card) => {
-    console.log(`placeAndScoreOpponentCard opponentPlacedCards=${JSON.stringify(opponentPlacedCards)}`);
+    console.log(
+      `placeAndScoreOpponentCard opponentPlacedCardsRef.current=${JSON.stringify(opponentPlacedCardsRef.current)}`,
+    );
 
-    // place the opponent's card in the stated col/row - note: the opponent's cards are drawn from the placed cards
-    const newOpponentPlacedCards = cloneByJSON(opponentPlacedCards);
+    // place the opponent's card in the stated col/row - note: the opponent's cards are rendered to the screen from the opponent placed cards array of arrays
+    // note: we use the Ref.current here, as this code is called from an event listener
+    const newOpponentPlacedCards = cloneByJSON(opponentPlacedCardsRef.current);
     const newCard = cloneByJSON(card);
     newCard.left = col2Left(opponentCol + 8);
     newCard.top = row2Top(oppponentRow);
@@ -144,7 +166,13 @@ export const GameStateContextProvider = ({ children }) => {
       scoresRows: newOpponentScoresRows,
       scoresCols: newOpponentScoresCols,
       scoreTotal: newOpponentScoreTotal,
-    } = updateHandScores(opponentCol, oppponentRow, opponentScoresCols, opponentScoresRows, newOpponentPlacedCards);
+    } = updateHandScores(
+      opponentCol,
+      oppponentRow,
+      opponentScoresColsRef.current,
+      opponentScoresRowsRef.current,
+      newOpponentPlacedCards,
+    );
 
     // remember the updated Opponent hand
     console.log(
