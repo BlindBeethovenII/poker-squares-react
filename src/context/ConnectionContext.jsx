@@ -81,7 +81,7 @@ export const ConnectionContextProvider = ({ children }) => {
       if (isOpponentNameMessage(data)) {
         setOpponentName(getNameFromMessage(data));
       } else if (isPlaceCardMessage(data)) {
-        console.log('HostPeerGameModal processData received place card message');
+        console.log('hostGame processData received place card message');
         console.log(
           `About to call placeAndScoreOpponentCard opponentPlacedCards=${JSON.stringify(opponentPlacedCards)}`,
         );
@@ -141,7 +141,7 @@ export const ConnectionContextProvider = ({ children }) => {
     // TODO - can't get setConnection() in ConnectionContextProvider to set state before this processData is called - so for now passing conn as well
     const processData = (data, conn) => {
       if (isNewGameMessage(data)) {
-        console.log('JoinPeerGameModal processData received new game message');
+        console.log('joinGame processData received new game message');
         setOpponentType(OPPONENT_TYPE_HUMAN);
         setOpponentName(getNameFromMessage(data));
         setYourName(name);
