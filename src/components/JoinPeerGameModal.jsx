@@ -6,19 +6,6 @@ import styled from 'styled-components';
 import GameStateContext from '../context/GameStateContext';
 import ConnectionContext from '../context/ConnectionContext';
 
-import {
-  isNewGameMessage,
-  isPlaceCardMessage,
-  getNameFromMessage,
-  getDeckFromMessage,
-  getColFromMessage,
-  getRowFromMessage,
-  createOpponentNameMessage,
-  getSuitFromMessage,
-  getNumberFromMessage,
-} from '../shared/peer-messages';
-import { OPPONENT_TYPE_HUMAN } from '../shared/constants';
-
 const Button = styled.button`
   background: #761d38;
   color: white;
@@ -67,29 +54,11 @@ const JoinPeerGameModal = () => {
   const [name, setName] = useState('');
   const [gameId, setGameId] = useState('');
 
-  const {
-    openMainMenu,
-    joinPeerGameOpen,
-    closeJoinPeerGame,
-    setDeck,
-    setOpponentName,
-    setYourName,
-    setOpponentType,
-    placeAndScoreOpponentCard,
-    opponentPlacedCards,
-  } = useContext(GameStateContext);
+  const { openMainMenu, joinPeerGameOpen, closeJoinPeerGame } = useContext(GameStateContext);
 
-  const {
-    brokerId,
-    error,
-    connectedTo,
-    disconnected,
-    closed,
-    resetConnection,
-    joinGame,
-    sendData,
-    clearError,
-  } = useContext(ConnectionContext);
+  const { brokerId, error, connectedTo, disconnected, closed, resetConnection, joinGame, clearError } = useContext(
+    ConnectionContext,
+  );
 
   useEffect(() => {
     if (joinPeerGameOpen) {
@@ -100,35 +69,9 @@ const JoinPeerGameModal = () => {
     }
   }, [joinPeerGameOpen]);
 
-  // the join game peer process data function to process data it gets from the host
-  // TODO - can't get setConnection() in ConnectionContextProvider to set state before this processData is called - so for now passing conn as well
-  const processData = (data, conn) => {
-    if (isNewGameMessage(data)) {
-      console.log('JoinPeerGameModal processData received new game message');
-      setOpponentType(OPPONENT_TYPE_HUMAN);
-      setOpponentName(getNameFromMessage(data));
-      setYourName(name);
-      sendData(createOpponentNameMessage(name), conn);
-      setDeck(getDeckFromMessage(data));
-      setReadyToPlay(true);
-    } else if (isPlaceCardMessage(data)) {
-      console.log('JoinPeerGameModal processData received place card message');
-      console.log(`About to call placeAndScoreOpponentCard opponentPlacedCards=${JSON.stringify(opponentPlacedCards)}`);
-
-      const suit = getSuitFromMessage(data);
-      const number = getNumberFromMessage(data);
-      placeAndScoreOpponentCard(getColFromMessage(data), getRowFromMessage(data), {
-        suit,
-        number,
-      });
-    } else {
-      setUnexpectedData(data.type);
-    }
-  };
-
   const joinNewGame = () => {
     clearError();
-    joinGame(gameId, processData);
+    joinGame(gameId, name, setReadyToPlay, setUnexpectedData);
   };
 
   const closeJoinPeerGameDialog = () => {

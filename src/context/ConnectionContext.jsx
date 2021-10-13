@@ -1,8 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import PropTypes from 'prop-types';
 
 import Peer from 'peerjs';
+
+import {
+  createNewGameMessage,
+  isNewGameMessage,
+  isPlaceCardMessage,
+  isOpponentNameMessage,
+  getNameFromMessage,
+  getDeckFromMessage,
+  getColFromMessage,
+  getRowFromMessage,
+  createOpponentNameMessage,
+  getSuitFromMessage,
+  getNumberFromMessage,
+} from '../shared/peer-messages';
+import { createShuffledDeck } from '../shared/card-functions';
+import { OPPONENT_TYPE_HUMAN } from '../shared/constants';
+
+import GameStateContext from './GameStateContext';
 
 const ConnectionContext = React.createContext({});
 
@@ -14,6 +32,15 @@ export const ConnectionContextProvider = ({ children }) => {
   const [connection, setConnection] = useState(undefined);
   const [disconnected, setDisconnected] = useState(false);
   const [closed, setClosed] = useState(false);
+
+  const {
+    setDeck,
+    setOpponentName,
+    setYourName,
+    setOpponentType,
+    placeAndScoreOpponentCard,
+    opponentPlacedCards,
+  } = useContext(GameStateContext);
 
   // reset the connection
   const resetConnection = () => {
@@ -28,12 +55,47 @@ export const ConnectionContextProvider = ({ children }) => {
     setClosed(false);
   };
 
+  // send the given data packet down our connection, if one exists
+  // TODO - can't get setConnection() in ConnectionContextProvider to set state before the Join Peer processData is called - so for now passing conn as well
+  const sendData = (data, conn) => {
+    if (connection) {
+      console.log(`ConnectionConext sendData with connection defined for ${data.type}`);
+      connection.send(data);
+    } else if (conn) {
+      console.log(`ConnectionConext sendData with connection NOT defined for ${data.type}`);
+      conn.send(data);
+    } else {
+      console.log(`ConnectionConext logical error: sendData called when connection and conn not defined`);
+    }
+  };
+
   // host a new game, and send the given data when a connection is made
-  const hostGame = (id, data, processData) => {
+  const hostGame = (id, name, setUnexpectedData) => {
     const localPeer = new Peer(`poker-squares-react-${id}`);
 
     // remember the peer, so it can be reset
     setPeer(localPeer);
+
+    // this is how we process data we get from the join peer
+    const processData = (data) => {
+      if (isOpponentNameMessage(data)) {
+        setOpponentName(getNameFromMessage(data));
+      } else if (isPlaceCardMessage(data)) {
+        console.log('HostPeerGameModal processData received place card message');
+        console.log(
+          `About to call placeAndScoreOpponentCard opponentPlacedCards=${JSON.stringify(opponentPlacedCards)}`,
+        );
+
+        const suit = getSuitFromMessage(data);
+        const number = getNumberFromMessage(data);
+        placeAndScoreOpponentCard(getColFromMessage(data), getRowFromMessage(data), {
+          suit,
+          number,
+        });
+      } else {
+        setUnexpectedData(data.type);
+      }
+    };
 
     localPeer.on('open', () => {
       if (brokerId !== localPeer.id) {
@@ -46,11 +108,15 @@ export const ConnectionContextProvider = ({ children }) => {
     localPeer.on('connection', (conn) => {
       setConnection(conn);
 
-      // send the given data, if defined, when the connection is opened
+      // when the connection is opened - start the new game
       conn.on('open', () => {
-        if (data) {
-          conn.send(data);
-        }
+        const deck = createShuffledDeck();
+        const newGameMessage = createNewGameMessage(name, deck);
+        setOpponentType(OPPONENT_TYPE_HUMAN);
+        setYourName(name);
+        setDeck(deck);
+        // and send it to the join peer
+        conn.send(newGameMessage);
       });
 
       conn.on('data', processData);
@@ -65,11 +131,39 @@ export const ConnectionContextProvider = ({ children }) => {
     });
   };
 
-  const joinGame = (id, processData) => {
+  const joinGame = (id, name, setReadyToPlay, setUnexpectedData) => {
     const localPeer = new Peer();
 
     // remember the peer, so it can be reset
     setPeer(localPeer);
+
+    // this is how we process data we get from the host peer
+    // TODO - can't get setConnection() in ConnectionContextProvider to set state before this processData is called - so for now passing conn as well
+    const processData = (data, conn) => {
+      if (isNewGameMessage(data)) {
+        console.log('JoinPeerGameModal processData received new game message');
+        setOpponentType(OPPONENT_TYPE_HUMAN);
+        setOpponentName(getNameFromMessage(data));
+        setYourName(name);
+        sendData(createOpponentNameMessage(name), conn);
+        setDeck(getDeckFromMessage(data));
+        setReadyToPlay(true);
+      } else if (isPlaceCardMessage(data)) {
+        console.log('JoinPeerGameModal processData received place card message');
+        console.log(
+          `About to call placeAndScoreOpponentCard opponentPlacedCards=${JSON.stringify(opponentPlacedCards)}`,
+        );
+
+        const suit = getSuitFromMessage(data);
+        const number = getNumberFromMessage(data);
+        placeAndScoreOpponentCard(getColFromMessage(data), getRowFromMessage(data), {
+          suit,
+          number,
+        });
+      } else {
+        setUnexpectedData(data.type);
+      }
+    };
 
     localPeer.on('open', () => {
       if (brokerId !== localPeer.id) {
@@ -111,18 +205,6 @@ export const ConnectionContextProvider = ({ children }) => {
     localPeer.on('close', () => {
       setClosed(true);
     });
-  };
-
-  // send the given data packet down our connection, if one exists
-  // TODO - can't get setConnection() in ConnectionContextProvider to set state before the Join Peer processData is called - so for now passing conn as well
-  const sendData = (data, conn) => {
-    if (connection) {
-      connection.send(data);
-    } else if (conn) {
-      conn.send(data);
-    } else {
-      console.log(`ConnectionConext logical error: sendData called when connection not defined`);
-    }
   };
 
   // some clients want to clear the error before they try again

@@ -6,19 +6,6 @@ import styled from 'styled-components';
 import GameStateContext from '../context/GameStateContext';
 import ConnectionContext from '../context/ConnectionContext';
 
-import { createShuffledDeck } from '../shared/card-functions';
-import {
-  createNewGameMessage,
-  isOpponentNameMessage,
-  getNameFromMessage,
-  isPlaceCardMessage,
-  getSuitFromMessage,
-  getNumberFromMessage,
-  getColFromMessage,
-  getRowFromMessage,
-} from '../shared/peer-messages';
-import { OPPONENT_TYPE_HUMAN } from '../shared/constants';
-
 const Button = styled.button`
   background: #761d38;
   color: white;
@@ -77,17 +64,7 @@ const HostPeerGameModal = () => {
   const [unexpectedData, setUnexpectedData] = useState('');
   const [gameId, setGameId] = useState('');
 
-  const {
-    openMainMenu,
-    hostPeerGameOpen,
-    closeHostPeerGame,
-    setDeck,
-    setOpponentType,
-    setYourName,
-    setOpponentName,
-    opponentPlacedCards,
-    placeAndScoreOpponentCard,
-  } = useContext(GameStateContext);
+  const { openMainMenu, hostPeerGameOpen, closeHostPeerGame } = useContext(GameStateContext);
 
   const { brokerId, error, connectedTo, disconnected, closed, resetConnection, hostGame } = useContext(
     ConnectionContext,
@@ -102,35 +79,12 @@ const HostPeerGameModal = () => {
     }
   }, [hostPeerGameOpen]);
 
-  // the host game peer process data function to process data it gets from the join game peer
-  const processData = (data) => {
-    if (isOpponentNameMessage(data)) {
-      setOpponentName(getNameFromMessage(data));
-    } else if (isPlaceCardMessage(data)) {
-      console.log('HostPeerGameModal processData received place card message');
-      console.log(`About to call placeAndScoreOpponentCard opponentPlacedCards=${JSON.stringify(opponentPlacedCards)}`);
-
-      const suit = getSuitFromMessage(data);
-      const number = getNumberFromMessage(data);
-      placeAndScoreOpponentCard(getColFromMessage(data), getRowFromMessage(data), {
-        suit,
-        number,
-      });
-    } else {
-      setUnexpectedData(data.type);
-    }
-  };
-
   const hostNewGame = () => {
-    const deck = createShuffledDeck();
     // an algorithm I found on the web to generate a 4 digit hex string
     // eslint-disable-next-line no-bitwise
     const id = ((Math.random() * 0xffff) << 0).toString(16);
     setGameId(id);
-    hostGame(id, createNewGameMessage(name, deck), processData);
-    setOpponentType(OPPONENT_TYPE_HUMAN);
-    setYourName(name);
-    setDeck(deck);
+    hostGame(id, name, setUnexpectedData);
     setReadyToPlay(true);
   };
 
