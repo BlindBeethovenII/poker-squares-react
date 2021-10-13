@@ -140,22 +140,20 @@ const HostPeerGameModal = () => {
   };
 
   return (
-    <div>
-      <Modal open={hostPeerGameOpen} onClose={closeHostPeerGameDialog} center>
-        <Title>Host Peer Game</Title>
-        <TextInput placeholder="Enter your name" onChange={(e) => setName(e.target.value)} />
-        <Button onClick={hostNewGame}>Host</Button>
-        {gameId && <GameId>Game Id: {gameId}</GameId>}
-        {brokerId && <Info>Broker Id: {brokerId}</Info>}
-        {connectedTo && <Info>Connected To: {connectedTo}</Info>}
-        {disconnected && <Info>Disconnected</Info>}
-        {closed && <Info>Closed</Info>}
-        {error && <Info>Error: {error.type}</Info>}
-        {unexpectedData && <Info>Unexpected Data From Host: {unexpectedData}</Info>}
-        {readyToPlay && <Button onClick={closeHostPeerGame}>Play</Button>}
-        <Button onClick={closeHostPeerGameDialog}>Cancel</Button>
-      </Modal>
-    </div>
+    <Modal open={hostPeerGameOpen} onClose={closeHostPeerGameDialog} center>
+      <Title>Host Peer Game</Title>
+      <TextInput placeholder="Enter your name" onChange={(e) => setName(e.target.value)} />
+      <Button onClick={hostNewGame}>Host</Button>
+      {gameId && <GameId>Game Id: {gameId}</GameId>}
+      {brokerId && <Info>Broker Id: {brokerId}</Info>}
+      {connectedTo && <Info>Connected To: {connectedTo}</Info>}
+      {disconnected && <Info>Disconnected</Info>}
+      {closed && <Info>Closed</Info>}
+      {error && <Info>Error: {error.type}</Info>}
+      {unexpectedData && <Info>Unexpected Data From Host: {unexpectedData}</Info>}
+      {readyToPlay && <Button onClick={closeHostPeerGame}>Play</Button>}
+      <Button onClick={closeHostPeerGameDialog}>Cancel</Button>
+    </Modal>
   );
 };
 

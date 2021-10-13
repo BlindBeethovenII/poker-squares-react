@@ -75,16 +75,14 @@ const SelectOpponentLevelModal = () => {
   };
 
   return (
-    <div>
-      <Modal open={selectOpponentLevelOpen} onClose={closeBackToMainMenu} center>
-        <Title>Select Opponent Level</Title>
-        <AvatarLevel1Button onClick={() => localStartGame(1)} />
-        <AvatarLevel2Button onClick={() => localStartGame(2)} />
-        <AvatarLevel3Button onClick={() => localStartGame(3)} />
-        <AvatarLevel4Button onClick={() => localStartGame(4)} />
-        <AvatarLevel5Button onClick={() => localStartGame(5)} />
-      </Modal>
-    </div>
+    <Modal open={selectOpponentLevelOpen} onClose={closeBackToMainMenu} center>
+      <Title>Select Opponent Level</Title>
+      <AvatarLevel1Button onClick={() => localStartGame(1)} />
+      <AvatarLevel2Button onClick={() => localStartGame(2)} />
+      <AvatarLevel3Button onClick={() => localStartGame(3)} />
+      <AvatarLevel4Button onClick={() => localStartGame(4)} />
+      <AvatarLevel5Button onClick={() => localStartGame(5)} />
+    </Modal>
   );
 };
 

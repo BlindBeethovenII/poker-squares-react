@@ -59,20 +59,18 @@ const MainMenuModal = () => {
   };
 
   return (
-    <div>
-      <Modal
-        open={mainMenuOpen}
-        onClose={closeIfGameInProgress}
-        center
-        closeOnEsc={gameInProgress}
-        showCloseIcon={gameInProgress}>
-        <Title>Main Menu</Title>
-        <Button onClick={openSelectOpponentLevelModal}>Start New Solo Game</Button>
-        <Button onClick={localHostPeerGame}>Host Peer Game</Button>
-        <Button onClick={localJoinPeerGame}>Join Peer Game</Button>
-        {gameInProgress && <Button onClick={closeIfGameInProgress}>Resume Game</Button>}
-      </Modal>
-    </div>
+    <Modal
+      open={mainMenuOpen}
+      onClose={closeIfGameInProgress}
+      center
+      closeOnEsc={gameInProgress}
+      showCloseIcon={gameInProgress}>
+      <Title>Main Menu</Title>
+      <Button onClick={openSelectOpponentLevelModal}>Start New Solo Game</Button>
+      <Button onClick={localHostPeerGame}>Host Peer Game</Button>
+      <Button onClick={localJoinPeerGame}>Join Peer Game</Button>
+      {gameInProgress && <Button onClick={closeIfGameInProgress}>Resume Game</Button>}
+    </Modal>
   );
 };
 
