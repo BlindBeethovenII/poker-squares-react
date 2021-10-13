@@ -88,7 +88,6 @@ export const GameStateContextProvider = ({ children }) => {
   // see comment later for code called from event listeners
   const opponentPlacedCardsRef = React.useRef(opponentPlacedCards);
   const setOpponentPlacedCards = (data) => {
-    console.log(`setOpponentPlacedCards called ${JSON.stringify(data)}`);
     opponentPlacedCardsRef.current = data;
     _setOpponentPlacedCards(data);
   };
@@ -149,10 +148,6 @@ export const GameStateContextProvider = ({ children }) => {
   // place the given card at the stated opponent's column and row, with the given card index
   // this is called from a peer data event listener so we need to use useRef so the latest value of opponentPlacedCards is available to this function
   const placeAndScoreOpponentCard = (opponentCol, oppponentRow, card) => {
-    console.log(
-      `placeAndScoreOpponentCard opponentPlacedCardsRef.current=${JSON.stringify(opponentPlacedCardsRef.current)}`,
-    );
-
     // place the opponent's card in the stated col/row - note: the opponent's cards are rendered to the screen from the opponent placed cards array of arrays
     // note: we use the Ref.current here, as this code is called from an event listener
     const newOpponentPlacedCards = cloneByJSON(opponentPlacedCardsRef.current);
@@ -175,11 +170,6 @@ export const GameStateContextProvider = ({ children }) => {
     );
 
     // remember the updated Opponent hand
-    console.log(
-      `placeAndScoreOpponentCard about to call setOpponentPlacedCards newOpponentPlacedCards=${JSON.stringify(
-        newOpponentPlacedCards,
-      )}`,
-    );
     setOpponentPlacedCards(newOpponentPlacedCards);
     setOpponentScoresRows(newOpponentScoresRows);
     setOpponentScoresCols(newOpponentScoresCols);
