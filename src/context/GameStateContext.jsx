@@ -25,7 +25,7 @@ import {
   placeCardByAlgorithm2,
   countCardsInRow,
 } from '../shared/card-placement-algorithms';
-import { createPlaceCardMessage } from '../shared/peer-messages';
+import { createPlaceCardMessage, createResetGameMessage } from '../shared/peer-messages';
 
 const GameStateContext = React.createContext({});
 
@@ -178,7 +178,7 @@ export const GameStateContextProvider = ({ children }) => {
   };
 
   // set the deck and go back to first card, and reset the hand/scores
-  const setDeckAndResetCurrentCardIndex = (newDeck) => {
+  const setDeckAndResetAll = (newDeck) => {
     setDeck(newDeck);
     setCurrentCardIndex(0);
     resetHand();
@@ -190,11 +190,21 @@ export const GameStateContextProvider = ({ children }) => {
     setCurrentCardIndex(0);
   };
 
+  // are we the host or the peer
+  const [isHost, setIsHost] = useState(false);
+
   // replay the current game
-  const replayGame = () => {
+  const replayGame = (sendData) => {
     if (opponentType === OPPONENT_TYPE_AI) {
       resetHand();
       resetDeck();
+    } else if (isHost) {
+      // we are in a peer game - and if we are the host, we reset the game
+      const newDeck = createShuffledDeck();
+      const newGameMessage = createResetGameMessage(newDeck);
+      setDeckAndResetAll(newDeck);
+      // and send it to the join peer
+      sendData(newGameMessage);
     }
   };
 
@@ -265,7 +275,10 @@ export const GameStateContextProvider = ({ children }) => {
     countCardsInRow(3, cards) +
     countCardsInRow(4, cards);
 
-  const gameCompleted = countPlacedCards(placedCards) === 25 && countPlacedCards(opponentPlacedCards) === 25;
+  const showReplayGameButton =
+    countPlacedCards(placedCards) === 25 &&
+    countPlacedCards(opponentPlacedCards) === 25 &&
+    (opponentType === OPPONENT_TYPE_AI || isHost);
 
   // expose our state and state functions via the context
   const context = {
@@ -319,8 +332,8 @@ export const GameStateContextProvider = ({ children }) => {
     deck,
     currentCardIndex,
     gameInProgress: !!deck?.length,
-    gameCompleted,
-    setDeck: setDeckAndResetCurrentCardIndex,
+    showReplayGameButton,
+    setDeckAndResetAll,
     resetDeck,
     placeCurrentCard,
     placeAndScoreOpponentCard,
@@ -328,6 +341,9 @@ export const GameStateContextProvider = ({ children }) => {
     // the opponent level
     opponentLevel,
     setOpponentLevel,
+
+    // set if we the host
+    setIsHost,
   };
 
   return <GameStateContext.Provider value={context}>{children}</GameStateContext.Provider>;

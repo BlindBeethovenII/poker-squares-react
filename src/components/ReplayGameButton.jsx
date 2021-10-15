@@ -3,7 +3,9 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 import { col2Left, row2Top } from '../shared/card-functions';
+
 import GameStateContext from '../context/GameStateContext';
+import ConnectionContext from '../context/ConnectionContext';
 
 const left = col2Left(7) + 47;
 const top = row2Top(6) + 10;
@@ -27,12 +29,13 @@ const Button = styled.button`
 `;
 
 const ReplayGameButton = () => {
-  const { gameCompleted, replayGame } = useContext(GameStateContext);
+  const { showReplayGameButton, replayGame } = useContext(GameStateContext);
+  const { sendData } = useContext(ConnectionContext);
 
-  if (gameCompleted) {
+  if (showReplayGameButton) {
     return (
       <div style={divstyle}>
-        <Button onClick={replayGame}>Replay Game</Button>
+        <Button onClick={() => replayGame(sendData)}>Replay Game</Button>
       </div>
     );
   }

@@ -9,6 +9,7 @@ import {
   isNewGameMessage,
   isPlaceCardMessage,
   isOpponentNameMessage,
+  isResetGameMessage,
   getNameFromMessage,
   getDeckFromMessage,
   getColFromMessage,
@@ -33,9 +34,14 @@ export const ConnectionContextProvider = ({ children }) => {
   const [disconnected, setDisconnected] = useState(false);
   const [closed, setClosed] = useState(false);
 
-  const { setDeck, setOpponentName, setYourName, setOpponentType, placeAndScoreOpponentCard } = useContext(
-    GameStateContext,
-  );
+  const {
+    setDeckAndResetAll,
+    setOpponentName,
+    setYourName,
+    setOpponentType,
+    placeAndScoreOpponentCard,
+    setIsHost,
+  } = useContext(GameStateContext);
 
   // reset the connection
   const resetConnection = () => {
@@ -106,7 +112,8 @@ export const ConnectionContextProvider = ({ children }) => {
         const newGameMessage = createNewGameMessage(name, deck);
         setOpponentType(OPPONENT_TYPE_HUMAN);
         setYourName(name);
-        setDeck(deck);
+        setDeckAndResetAll(deck);
+        setIsHost(true);
         // and send it to the join peer
         conn.send(newGameMessage);
       });
@@ -139,7 +146,7 @@ export const ConnectionContextProvider = ({ children }) => {
         setOpponentName(getNameFromMessage(data));
         setYourName(name);
         sendData(createOpponentNameMessage(name), conn);
-        setDeck(getDeckFromMessage(data));
+        setDeckAndResetAll(getDeckFromMessage(data));
         setReadyToPlay(true);
       } else if (isPlaceCardMessage(data)) {
         const suit = getSuitFromMessage(data);
@@ -148,6 +155,8 @@ export const ConnectionContextProvider = ({ children }) => {
           suit,
           number,
         });
+      } else if (isResetGameMessage(data)) {
+        setDeckAndResetAll(getDeckFromMessage(data));
       } else {
         setUnexpectedData(data.type);
       }
