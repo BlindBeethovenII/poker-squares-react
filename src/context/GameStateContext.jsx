@@ -23,6 +23,7 @@ import {
   placeCardByAlgorithm0,
   placeCardByAlgorithm1,
   placeCardByAlgorithm2,
+  countCardsInRow,
 } from '../shared/card-placement-algorithms';
 import { createPlaceCardMessage } from '../shared/peer-messages';
 
@@ -189,6 +190,14 @@ export const GameStateContextProvider = ({ children }) => {
     setCurrentCardIndex(0);
   };
 
+  // replay the current game
+  const replayGame = () => {
+    if (opponentType === OPPONENT_TYPE_AI) {
+      resetHand();
+      resetDeck();
+    }
+  };
+
   // the opponent level
   const [opponentLevel, setOpponentLevel] = useState(1);
 
@@ -249,6 +258,15 @@ export const GameStateContextProvider = ({ children }) => {
     setCurrentCardIndex(currentCardIndex + 1);
   };
 
+  const countPlacedCards = (cards) =>
+    countCardsInRow(0, cards) +
+    countCardsInRow(1, cards) +
+    countCardsInRow(2, cards) +
+    countCardsInRow(3, cards) +
+    countCardsInRow(4, cards);
+
+  const gameCompleted = countPlacedCards(placedCards) === 25 && countPlacedCards(opponentPlacedCards) === 25;
+
   // expose our state and state functions via the context
   const context = {
     // the main menu open
@@ -294,10 +312,14 @@ export const GameStateContextProvider = ({ children }) => {
     // reset the hand
     resetHand,
 
+    // and replay the current game
+    replayGame,
+
     // the deck with its current card index
     deck,
     currentCardIndex,
     gameInProgress: !!deck?.length,
+    gameCompleted,
     setDeck: setDeckAndResetCurrentCardIndex,
     resetDeck,
     placeCurrentCard,

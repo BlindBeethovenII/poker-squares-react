@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { col2Left, row2Top } from '../shared/card-functions';
 import GameStateContext from '../context/GameStateContext';
 
-const left = col2Left(5) + 47;
+const left = col2Left(7) + 47;
 const top = row2Top(6) + 10;
 
 const divstyle = {
@@ -26,13 +26,13 @@ const Button = styled.button`
   border-radius: 3px;
 `;
 
-const MainMenuButton = () => {
-  const { openMainMenu, gameInProgress } = useContext(GameStateContext);
+const ReplayGameButton = () => {
+  const { gameCompleted, replayGame } = useContext(GameStateContext);
 
-  if (gameInProgress) {
+  if (gameCompleted) {
     return (
       <div style={divstyle}>
-        <Button onClick={openMainMenu}>Main Menu</Button>
+        <Button onClick={replayGame}>Replay Game</Button>
       </div>
     );
   }
@@ -41,4 +41,4 @@ const MainMenuButton = () => {
   return null;
 };
 
-export default MainMenuButton;
+export default ReplayGameButton;

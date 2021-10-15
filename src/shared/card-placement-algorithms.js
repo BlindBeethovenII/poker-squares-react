@@ -204,7 +204,7 @@ const rowCannotBeStraight = (row, placedCards) => {
 };
 
 // return the number of cards in the given row
-const countCardsInRow = (row, placedCards) => {
+export const countCardsInRow = (row, placedCards) => {
   let result = 0;
   for (let col = 0; col < 5; col += 1) {
     if (!isCardNone(placedCards[col][row])) {

@@ -6,6 +6,7 @@ import Scores from './components/Scores';
 import GitInfo from './components/GitInfo';
 import OpponentGraphics from './components/OpponentGraphics';
 import MainMenuButton from './components/MainMenuButton';
+import ReplayGameButton from './components/ReplayGameButton';
 import MainMenuModal from './components/MainMenuModal';
 import SelectOpponentLevelModal from './components/SelectOpponentLevelModal';
 import HostPeerGameModal from './components/HostPeerGameModal';
@@ -23,6 +24,7 @@ const App = () => (
       <GitInfo />
       <OpponentGraphics />
       <MainMenuButton />
+      <ReplayGameButton />
       <MainMenuModal />
       <SelectOpponentLevelModal />
       <HostPeerGameModal />
