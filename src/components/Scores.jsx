@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 
 import Score from './Score';
+
 import { keyFromIndex } from '../shared/card-functions';
 import GameStateContext from '../context/GameStateContext';
 
@@ -17,7 +18,14 @@ const Scores = () => {
       {scoresCols.map((score, col) => (
         <Score key={keyFromIndex('colscore', col, 'human')} col={col} row={5} score={score} isTotalScore={false} />
       ))}
-      <Score key="totalscore_human" col={5} row={5} score={scoreTotal} isTotalScore />
+      <Score
+        key="totalscore_human"
+        col={5}
+        row={5}
+        score={scoreTotal}
+        isTotalScore
+        winningScore={scoreTotal > opponentScoreTotal}
+      />
       {opponentScoresRows.map((score, row) => (
         <Score key={keyFromIndex('rowscore', row, 'opponent')} col={7} row={row} score={score} isTotalScore={false} />
       ))}
@@ -30,7 +38,14 @@ const Scores = () => {
           isTotalScore={false}
         />
       ))}
-      <Score key="totalscore_opponent" col={7} row={5} score={opponentScoreTotal} isTotalScore />
+      <Score
+        key="totalscore_opponent"
+        col={7}
+        row={5}
+        score={opponentScoreTotal}
+        isTotalScore
+        winningScore={opponentScoreTotal > scoreTotal}
+      />
     </div>
   );
 };

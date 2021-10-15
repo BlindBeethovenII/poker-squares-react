@@ -38,7 +38,7 @@ const PulseDiv = styled.div`
 
 const Score = (props) => {
   // compute score absolute positioning based on grid (col, row) values
-  const { col, row, score, isTotalScore } = props;
+  const { col, row, score, isTotalScore, winningScore } = props;
 
   const [useAnimation, setUseAnimation] = useState(false);
 
@@ -52,16 +52,27 @@ const Score = (props) => {
     setUseAnimation(false);
   };
 
-  const scoreColour = isTotalScore ? 'gold' : 'white';
+  let scoreColour = 'white';
+  if (isTotalScore) {
+    if (winningScore) {
+      scoreColour = 'gold';
+    } else {
+      scoreColour = 'silver';
+    }
+  }
+
+  const fontSize = isTotalScore && winningScore ? '44px' : '36px';
+  const adjustLeft = isTotalScore && winningScore && score > 9 ? -12 : 0;
+  const adjustTop = isTotalScore && winningScore ? -8 : 0;
 
   const scorestyle = {
     position: 'absolute',
-    left: `${28 + col * CARD_WIDTH + (col === 5 ? 10 : 0)}px`,
-    top: `${40 + row * CARD_HEIGHT}px`,
+    left: `${28 + adjustLeft + col * CARD_WIDTH + (col === 5 ? 10 : 0)}px`,
+    top: `${40 + adjustTop + row * CARD_HEIGHT}px`,
     width: '40px',
     height: '40px',
     fontWeight: 'bold',
-    fontSize: '36px',
+    fontSize,
     // letterSpacing: '-0.1em',
     textAlign: 'center',
     color: `${scoreColour}`,
@@ -83,6 +94,11 @@ Score.propTypes = {
   row: PropTypes.number.isRequired,
   score: PropTypes.number.isRequired,
   isTotalScore: PropTypes.bool.isRequired,
+  winningScore: PropTypes.bool,
+};
+
+Score.defaultProps = {
+  winningScore: false,
 };
 
 export default Score;
