@@ -7,10 +7,12 @@ import GitInfo from './components/GitInfo';
 import OpponentGraphics from './components/OpponentGraphics';
 import MainMenuButton from './components/MainMenuButton';
 import ReplayGameButton from './components/ReplayGameButton';
+import HelpButton from './components/HelpButton';
 import MainMenuModal from './components/MainMenuModal';
 import SelectOpponentLevelModal from './components/SelectOpponentLevelModal';
 import HostPeerGameModal from './components/HostPeerGameModal';
 import JoinPeerGameModal from './components/JoinPeerGameModal';
+import HelpModal from './components/HelpModal';
 
 import { GameStateContextProvider } from './context/GameStateContext';
 import { ConnectionContextProvider } from './context/ConnectionContext';
@@ -25,10 +27,12 @@ const App = () => (
       <OpponentGraphics />
       <MainMenuButton />
       <ReplayGameButton />
+      <HelpButton />
       <MainMenuModal />
       <SelectOpponentLevelModal />
       <HostPeerGameModal />
       <JoinPeerGameModal />
+      <HelpModal />
     </ConnectionContextProvider>
   </GameStateContextProvider>
 );

@@ -33,6 +33,7 @@ const MainMenuModal = () => {
     openHostPeerGame,
     openJoinPeerGame,
     gameInProgress,
+    openHelp,
   } = useContext(GameStateContext);
 
   const closeIfGameInProgress = () => {
@@ -70,6 +71,7 @@ const MainMenuModal = () => {
       <Button onClick={localHostPeerGame}>Host Peer Game</Button>
       <Button onClick={localJoinPeerGame}>Join Peer Game</Button>
       {gameInProgress && <Button onClick={closeIfGameInProgress}>Resume Game</Button>}
+      <Button onClick={openHelp}>Help</Button>
     </Modal>
   );
 };

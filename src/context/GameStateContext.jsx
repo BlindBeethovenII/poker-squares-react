@@ -48,6 +48,11 @@ export const GameStateContextProvider = ({ children }) => {
   const openMainMenu = () => setMainMenuOpen(true);
   const closeMainMenu = () => setMainMenuOpen(false);
 
+  // the help window state bool and functions
+  const [helpOpen, setHelpOpen] = useState(false);
+  const openHelp = () => setHelpOpen(true);
+  const closeHelp = () => setHelpOpen(false);
+
   // the select opponent level menu open state bool and functions
   const [selectOpponentLevelOpen, setSelectOpponentLevelOpen] = useState(false);
   const openSelectOpponentLevel = () => setSelectOpponentLevelOpen(true);
@@ -286,6 +291,11 @@ export const GameStateContextProvider = ({ children }) => {
     mainMenuOpen,
     openMainMenu,
     closeMainMenu,
+
+    // the help window open
+    helpOpen,
+    openHelp,
+    closeHelp,
 
     // the select opponent level menu open
     selectOpponentLevelOpen,
