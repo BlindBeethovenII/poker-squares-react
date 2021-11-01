@@ -44,7 +44,12 @@ const opponentnamestyle = {
 };
 
 const OpponentImage = () => {
-  const { opponentType, yourName, opponentName, opponentLevel } = useContext(GameStateContext);
+  const { opponentType, yourName, opponentName, opponentLevel, gameInProgress } = useContext(GameStateContext);
+
+  // don't show anything if a game is not yet in progress
+  if (!gameInProgress) {
+    return null;
+  }
 
   if (opponentType === OPPONENT_TYPE_HUMAN) {
     return (
