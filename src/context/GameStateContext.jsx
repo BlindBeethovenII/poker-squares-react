@@ -42,6 +42,13 @@ const emptyScoresRows = () => [0, 0, 0, 0, 0];
 
 const emptyScoresCols = () => [0, 0, 0, 0, 0];
 
+const countPlacedCards = (cards) =>
+  countCardsInRow(0, cards) +
+  countCardsInRow(1, cards) +
+  countCardsInRow(2, cards) +
+  countCardsInRow(3, cards) +
+  countCardsInRow(4, cards);
+
 export const GameStateContextProvider = ({ children }) => {
   // the main menu open state bool and functions
   const [mainMenuOpen, setMainMenuOpen] = useState(true);
@@ -76,7 +83,7 @@ export const GameStateContextProvider = ({ children }) => {
   const [opponentName, setOpponentName] = useState(false);
 
   // the placed cards
-  const [placedCards, setPlacedCards] = useState(emptyPlacedCards());
+  const [placedCards, _setPlacedCards] = useState(emptyPlacedCards());
   const [opponentPlacedCards, _setOpponentPlacedCards] = useState(emptyPlacedCards());
 
   // the scores by row
@@ -91,7 +98,15 @@ export const GameStateContextProvider = ({ children }) => {
   const [scoreTotal, setScoreTotal] = useState(0);
   const [opponentScoreTotal, setOpponentScoreTotal] = useState(0);
 
+  // opponents saved cards to play later when this player has played the same card
+  const [opponentSavedCards, _setOpponentSavedCards] = useState([]);
+
   // see comment later for code called from event listeners
+  const placedCardsRef = React.useRef(placedCards);
+  const setPlacedCards = (data) => {
+    placedCardsRef.current = data;
+    _setPlacedCards(data);
+  };
   const opponentPlacedCardsRef = React.useRef(opponentPlacedCards);
   const setOpponentPlacedCards = (data) => {
     opponentPlacedCardsRef.current = data;
@@ -107,6 +122,11 @@ export const GameStateContextProvider = ({ children }) => {
     opponentScoresColsRef.current = data;
     _setOpponentScoresCols(data);
   };
+  const opponentSavedCardsRef = React.useRef(opponentSavedCards);
+  const setOpponentSavedCards = (data) => {
+    opponentSavedCardsRef.current = data;
+    _setOpponentSavedCards(data);
+  };
 
   // reset the hand
   const resetHand = () => {
@@ -119,6 +139,7 @@ export const GameStateContextProvider = ({ children }) => {
     setOpponentScoresCols(emptyScoresCols());
     setScoreTotal(0);
     setOpponentScoreTotal(0);
+    setOpponentSavedCards([]);
   };
 
   // the deck with its current card index
@@ -180,6 +201,22 @@ export const GameStateContextProvider = ({ children }) => {
     setOpponentScoresRows(newOpponentScoresRows);
     setOpponentScoresCols(newOpponentScoresCols);
     setOpponentScoreTotal(newOpponentScoreTotal);
+  };
+
+  // place opponent's card - if we've already played that one, or save the opponent's card for later - if we haven't
+  const placeOrSaveOpponentCard = (opponentCol, oppponentRow, card) => {
+    // decide if can place the card now - we just use the count of the number of placed cards each
+    // note: we use the Ref.current here, as this code is called from an event listener
+    if (countPlacedCards(opponentPlacedCardsRef.current) < countPlacedCards(placedCardsRef.current)) {
+      // the opponent hasn't placed as many cards as us - so we can place this card straight away
+      placeAndScoreOpponentCard(opponentCol, oppponentRow, card);
+    } else {
+      // save this card for later
+      // perhaps I don't have to clone - but easier to think about it this way
+      const newOpponentSavedCards = cloneByJSON(opponentSavedCardsRef.current);
+      newOpponentSavedCards.push({ opponentCol, oppponentRow, card });
+      setOpponentSavedCards(newOpponentSavedCards);
+    }
   };
 
   // set the deck and go back to first card, and reset the hand/scores
@@ -266,19 +303,27 @@ export const GameStateContextProvider = ({ children }) => {
       sendData(createPlaceCardMessage(col, row, currentCard.suit, currentCard.number));
     }
 
-    // now do the humn place and score
+    // now do the human place and score
     placeAndScoreCard(col, row, currentCard);
 
     // onto the next card
     setCurrentCardIndex(currentCardIndex + 1);
-  };
 
-  const countPlacedCards = (cards) =>
-    countCardsInRow(0, cards) +
-    countCardsInRow(1, cards) +
-    countCardsInRow(2, cards) +
-    countCardsInRow(3, cards) +
-    countCardsInRow(4, cards);
+    // if there are any saved opponents cards to play - now is a good time to process all we can
+    // and we play as many as possible while the opponents have still played less than us
+    // note: we don't have to use Ref here as this code is never called from an event handler
+    // console.log(`countPlacedCards(opponentPlacedCards)=${countPlacedCards(opponentPlacedCards)}`);
+    // console.log(`countPlacedCards(placedCards)=${countPlacedCards(placedCards)}`);
+    // // the card we've just placed isn't actually in placedCards yet, as the state update doesn't happen until later - so add one to below to cope for that
+    if (opponentSavedCards.length && countPlacedCards(opponentPlacedCards) < countPlacedCards(placedCards) + 1) {
+      // take the first opponent saved card
+      const { opponentCol, oppponentRow, card } = opponentSavedCards.shift();
+      placeAndScoreOpponentCard(opponentCol, oppponentRow, card);
+    }
+
+    // remember the remaining opponent saved cards - perhaps don't have to do this, as using shift above, but not sure how it affects the setting of the Ref
+    setOpponentSavedCards(opponentSavedCards);
+  };
 
   const showReplayGameButton =
     countPlacedCards(placedCards) === 25 &&
@@ -346,7 +391,7 @@ export const GameStateContextProvider = ({ children }) => {
     setDeckAndResetAll,
     resetDeck,
     placeCurrentCard,
-    placeAndScoreOpponentCard,
+    placeOrSaveOpponentCard,
 
     // the opponent level
     opponentLevel,

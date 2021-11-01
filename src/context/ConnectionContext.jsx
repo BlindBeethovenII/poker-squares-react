@@ -39,7 +39,7 @@ export const ConnectionContextProvider = ({ children }) => {
     setOpponentName,
     setYourName,
     setOpponentType,
-    placeAndScoreOpponentCard,
+    placeOrSaveOpponentCard,
     setIsHost,
   } = useContext(GameStateContext);
 
@@ -86,7 +86,7 @@ export const ConnectionContextProvider = ({ children }) => {
       } else if (isPlaceCardMessage(data)) {
         const suit = getSuitFromMessage(data);
         const number = getNumberFromMessage(data);
-        placeAndScoreOpponentCard(getColFromMessage(data), getRowFromMessage(data), {
+        placeOrSaveOpponentCard(getColFromMessage(data), getRowFromMessage(data), {
           suit,
           number,
         });
@@ -151,7 +151,7 @@ export const ConnectionContextProvider = ({ children }) => {
       } else if (isPlaceCardMessage(data)) {
         const suit = getSuitFromMessage(data);
         const number = getNumberFromMessage(data);
-        placeAndScoreOpponentCard(getColFromMessage(data), getRowFromMessage(data), {
+        placeOrSaveOpponentCard(getColFromMessage(data), getRowFromMessage(data), {
           suit,
           number,
         });
