@@ -151,13 +151,11 @@ export const GameStateContextProvider = ({ children }) => {
   const placeAndScoreCard = (col, row, card) => {
     const newPlacedCards = cloneByJSON(placedCards);
     newPlacedCards[col][row] = { suit: card.suit, number: card.number };
-    const { scoresRows: newScoresRows, scoresCols: newScoresCols, scoreTotal: newScoreTotal } = updateHandScores(
-      col,
-      row,
-      scoresCols,
-      scoresRows,
-      newPlacedCards,
-    );
+    const {
+      scoresRows: newScoresRows,
+      scoresCols: newScoresCols,
+      scoreTotal: newScoreTotal,
+    } = updateHandScores(col, row, scoresCols, scoresRows, newPlacedCards);
 
     // remember the updated hand
     setPlacedCards(newPlacedCards);

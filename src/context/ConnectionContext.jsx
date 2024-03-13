@@ -34,14 +34,8 @@ export const ConnectionContextProvider = ({ children }) => {
   const [disconnected, setDisconnected] = useState(false);
   const [closed, setClosed] = useState(false);
 
-  const {
-    setDeckAndResetAll,
-    setOpponentName,
-    setYourName,
-    setOpponentType,
-    placeOrSaveOpponentCard,
-    setIsHost,
-  } = useContext(GameStateContext);
+  const { setDeckAndResetAll, setOpponentName, setYourName, setOpponentType, placeOrSaveOpponentCard, setIsHost } =
+    useContext(GameStateContext);
 
   // reset the connection
   const resetConnection = () => {

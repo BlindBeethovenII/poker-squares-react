@@ -6,9 +6,8 @@ import { keyFromIndex } from '../shared/card-functions';
 import GameStateContext from '../context/GameStateContext';
 
 const Scores = () => {
-  const { scoresRows, opponentScoresRows, scoresCols, opponentScoresCols, scoreTotal, opponentScoreTotal } = useContext(
-    GameStateContext,
-  );
+  const { scoresRows, opponentScoresRows, scoresCols, opponentScoresCols, scoreTotal, opponentScoreTotal } =
+    useContext(GameStateContext);
 
   return (
     <div>

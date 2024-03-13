@@ -66,9 +66,8 @@ const HostPeerGameModal = () => {
 
   const { openMainMenu, hostPeerGameOpen, closeHostPeerGame } = useContext(GameStateContext);
 
-  const { brokerId, error, connectedTo, disconnected, closed, resetConnection, hostGame } = useContext(
-    ConnectionContext,
-  );
+  const { brokerId, error, connectedTo, disconnected, closed, resetConnection, hostGame } =
+    useContext(ConnectionContext);
 
   useEffect(() => {
     if (hostPeerGameOpen) {

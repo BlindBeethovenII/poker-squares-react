@@ -56,9 +56,8 @@ const JoinPeerGameModal = () => {
 
   const { openMainMenu, joinPeerGameOpen, closeJoinPeerGame } = useContext(GameStateContext);
 
-  const { brokerId, error, connectedTo, disconnected, closed, resetConnection, joinGame, clearError } = useContext(
-    ConnectionContext,
-  );
+  const { brokerId, error, connectedTo, disconnected, closed, resetConnection, joinGame, clearError } =
+    useContext(ConnectionContext);
 
   useEffect(() => {
     if (joinPeerGameOpen) {
