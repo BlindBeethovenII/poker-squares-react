@@ -82,7 +82,7 @@
     "build": "yarn generate-git-info && node scripts/build.js",
     "test": "node scripts/test.js",
     "predeploy": "yarn build",
-    "deploy": "gh-pages -d build"
+    "deploy": "yarn predeploy && gh-pages -d build"
   },
   "browserslist": {
     "production": [
